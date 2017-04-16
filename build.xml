@@ -1,0 +1,24 @@
+<project name = "Greyvar-editor">
+    <import file = "../../jwrCommonsIndep/build.xml" /> 
+    <target name = "package" depends = "package-jar, package-zip" />
+    
+    <target name = "package-jar"> 
+        <jar destfile = "pkg/Greyvar-editor-${version}.jar" basedir = "bin/">
+        	<manifest>  
+        		<attribute name="Main-Class" value = "greyvarEditor.Main" />
+        	</manifest>
+        </jar> 
+    </target> 
+	
+	<target name = "package-zip"> 
+		   <zip destfile = "pkg/Greyvar-editor-${version}.zip"> 
+		    <zipfileset dir = "../../jwrCommonsJava/pkg/">
+		    	<include name = "jwrCommonsJava.jar" />
+		    </zipfileset>
+		    	
+		    <zipfileset dir = "pkg">  
+		    	<include name = "Greyvar-editor-${version}.jar" />
+		    </zipfileset>
+		   </zip>   
+	</target>
+</project>

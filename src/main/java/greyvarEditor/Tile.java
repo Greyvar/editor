@@ -1,0 +1,72 @@
+package greyvarEditor;
+
+import greyvarEditor.windows.editors.grid.panels.Texture;
+
+import java.io.File;
+
+import jwrCommonsJava.Logger;
+
+public class Tile {
+	public enum TeleportDirection {
+		NORTH, EAST, SOUTH, WEST;
+
+		public static TeleportDirection fromString(String string) {
+			if (string.equals("NORTH")) {
+				return NORTH;
+			} else if (string.equals("EAST")) {
+				return EAST;
+			} else if (string.equals("SOUTH")) {
+				return SOUTH;
+			} else if (string.equals("WEST")) {
+				return WEST;
+			} else {
+				throw new IllegalArgumentException("Direction cannot be parsed.");
+			}
+		}
+
+		public int getDegrees() {
+			switch (this) {
+			case NORTH:
+				return 0;
+			case EAST:
+				return 90;
+			case SOUTH:
+				return 180;
+			case WEST:
+				return 270;
+			default:
+				return 0;
+			}
+		}
+	};
+
+	public Texture tex;
+	public boolean traversable = true;
+	public int teleportDestinationX = 0;
+	public int teleportDestinationY = 0;
+	public String teleportDestinationGrid = "";
+	public TeleportDirection teleportDirection = TeleportDirection.SOUTH;
+	public boolean hover;
+	public String message;
+
+	public Tile(Texture tex) {
+		if (tex == null) {
+			throw new NullPointerException("Texture for the tile cannot be null");
+		}
+
+		this.tex = tex;
+	}
+
+	public String getTextureFilenameOnly() {
+		File f = new File(GameResources.dirTextures, "tiles");
+		String s = this.tex.getFilename().getAbsolutePath().replace(f.getAbsolutePath() + File.separator, "");
+		Logger.messageDebug("Filename on tile is: " + s); 
+
+		return s;
+	}
+
+	@Override
+	public String toString() {
+		return "Tile {tex: " + this.tex.toString() + "}";
+	}
+}
