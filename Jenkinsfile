@@ -5,5 +5,7 @@ node("fedora") {
 		checkout scm
 
 		sh "mvn package"
+
+		archive "target/*.jar"
 	}
 }
