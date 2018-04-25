@@ -103,8 +103,8 @@ public class TextureCache {
 				return this.textureCacheMutated.get(mutatedAttributes);
 			} else {
 				Texture mutatedTexture = t.clone();
-				mutatedTexture.rotate(rot);
 				mutatedTexture.flip(mutatedAttributes.flipV, mutatedAttributes.flipH);
+				mutatedTexture.rotate(rot);
 
 				this.textureCacheMutated.put(mutatedAttributes, mutatedTexture);
 
@@ -135,8 +135,8 @@ public class TextureCache {
 		}
 
 		if (this.textureCacheOriginals.containsKey(texName)) {
-			Logger.messageDebug("Duplicate texture filename, not loading: " + texName);
-			return this.textureCacheOriginals.get(texName);
+			Logger.messageDebug("Reploacing texture filename; " + texName);
+			this.textureCacheOriginals.remove(texName);
 		}
 
 		try {

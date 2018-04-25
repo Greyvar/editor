@@ -36,11 +36,13 @@ public class WindowTextureChooser extends JFrame {
 			this.addMouseListener(this);
 
 			this.tex = ttex;
-			this.setIcon(new ImageIcon(this.tex.image));
+			this.setIcon(new ImageIcon(this.tex.image.getScaledInstance(64, 64, java.awt.Image.SCALE_SMOOTH)));
 			this.setMaximumSize(new Dimension(64, 64));
 			this.setBackground(Color.WHITE);
 			this.setOpaque(true);
 			this.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+			this.setHorizontalTextPosition(JLabel.CENTER);
+			this.setVerticalTextPosition(JLabel.BOTTOM);
 		}
 
 		protected void click() {

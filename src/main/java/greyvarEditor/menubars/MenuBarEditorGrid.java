@@ -21,7 +21,7 @@ import jwrCommonsJava.Logger;
 public class MenuBarEditorGrid extends JMenuBar implements ActionListener, PopableWindow.Listener {
 	private final JMenuItem mniSave = new JMenuItem("Save");
 	private final JMenuItem mniDebug = new JMenuItem("Debug");
-	private final JMenuItem mniReload = new JMenuItem("Reload from disk");
+	private final JMenuItem mniReload = new JMenuItem("Reload grid from disk");
 	private final JMenuItem mniPopper = new JMenuItem("Pop");
 	private final JMenu mnuRectSize = new JMenu("Selection rect size");
 	private final JMenuItem mniRectSize1x1 = new JMenuItem("1x1");
@@ -35,6 +35,7 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 	private final JMenu mnuEditor = new JMenu("Editor");
 	private final JMenu mnuTextures = new JMenu("Textures");
 	private final JMenuItem mniFindReplace = new JMenuItem("Find/Replace");
+	private final JMenuItem mniReloadTextures = new JMenuItem("Reload textures, and reload grid");
 
 	public MenuBarEditorGrid(WindowEditorGrid windowEditorGrid) {
 		this.windowEditorGrid = windowEditorGrid;
@@ -72,6 +73,9 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 			this.windowEditorGrid.im.repaint();
 		} else if (source == this.mniLoadTextureAttributes) {
 			new TextureProertiesReader();
+		} else if (source == this.mniReloadTextures) {		
+			TextureCache.instance.loadTextures("tiles/");
+			this.windowEditorGrid.reload();
 		} else if (source == this.mniFindReplace) {
 			new WindowFindReplace(this.windowEditorGrid);
 		}
@@ -129,6 +133,9 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 
 		this.mniLoadTextureAttributes.addActionListener(this);
 		this.mnuTextures.add(this.mniLoadTextureAttributes);
+
+		this.mniReloadTextures.addActionListener(this);
+		this.mnuTextures.add(this.mniReloadTextures);
 
 		this.add(this.mnuTextures);
 	}
