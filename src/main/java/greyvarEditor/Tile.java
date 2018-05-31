@@ -1,9 +1,8 @@
 package greyvarEditor;
 
-import greyvarEditor.windows.editors.grid.panels.Texture;
-
 import java.io.File;
 
+import greyvarEditor.ui.windows.editors.grid.panels.Texture;
 import jwrCommonsJava.Logger;
 
 public class Tile {
@@ -40,7 +39,7 @@ public class Tile {
 		}
 	};
 
-	public Texture tex;
+	public transient Texture tex;
 	public boolean traversable = true;
 	public int teleportDestinationX = 0;
 	public int teleportDestinationY = 0;

@@ -1,10 +1,9 @@
 package greyvarEditor;
 
 
-import greyvarEditor.windows.WindowMain;
-
 import javax.swing.UIManager;
 
+import greyvarEditor.ui.windows.WindowMain;
 import jwrCommonsJava.Configuration;
 import jwrCommonsJava.Logger;
 

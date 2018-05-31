@@ -1,13 +1,12 @@
 package greyvarEditor;
 
-import greyvarEditor.windows.editors.grid.panels.Texture;
-
 import java.awt.Image;
 import java.io.File;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import greyvarEditor.ui.windows.editors.grid.panels.Texture;
 import jwrCommonsJava.Logger;
 
 public class TextureCache {
