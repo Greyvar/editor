@@ -2,6 +2,7 @@ package greyvarEditor.ui.windows;
 
 import greyvarEditor.TextureCache;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
+import greyvarEditor.utils.EditLayerMode;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -105,13 +106,29 @@ public class WindowTextureChooser extends JFrame {
 
 	private final SearchInput searchInput = new SearchInput();
 
-	private final Listener panAppearance;
+	private final Listener listener;
+	
+	private final TextureCache textureCache;
 
 	private final JPanel panTextures = new JPanel();
 	private final JLabel lblTextures = new JLabel("???");
 
-	public WindowTextureChooser(Listener panAppearance) {
-		this.panAppearance = panAppearance;
+	public WindowTextureChooser(Listener listener, EditLayerMode mode) {
+		switch (mode) {
+		case ENTITIES:
+			textureCache = TextureCache.instanceEntities;
+			break;
+		case TILES:
+			textureCache = TextureCache.instanceTiles;
+			break;
+		case FLUIDS: 
+			textureCache = TextureCache.instanceFluids;
+			break;
+		default:
+			textureCache = TextureCache.instanceTiles; 
+		} 
+		
+		this.listener = listener;
 		this.setupComponents();
 
 		this.setTitle("Chooser");
@@ -131,16 +148,16 @@ public class WindowTextureChooser extends JFrame {
 	}
 
 	public void onClickedTexture(Texture tex) {
-		this.panAppearance.onTexChoose(tex);
+		this.listener.onTexChoose(tex);
 	}
 
 	private void refreshTextureButtons() {
 		this.refreshTextureButtons(null);
 	}
 
-	private void refreshTextureButtons(String keyword) {
+	private void refreshTextureButtons(String keyword) { 
 		this.panTextures.removeAll();
-		Map<String, Texture> textures = TextureCache.instance.getAll();
+		Map<String, Texture> textures = textureCache.getAll();
 
 		final TreeSet<String> sorted = new TreeSet<String>();
 		sorted.addAll(textures.keySet());
@@ -178,9 +195,9 @@ public class WindowTextureChooser extends JFrame {
 		panControls.add(this.searchInput);
 		panControls.add(this.lblTextures);
 		panControls.add(new JButtonWithAl("Refresh") {
-			@Override
-			public void click() {
-				TextureCache.instance.loadTextures("tiles/");
+			@Override 
+			public void click() { 
+				textureCache.loadTextures();
 				WindowTextureChooser.this.refreshTextureButtons();
 			}
 		});

@@ -2,6 +2,7 @@ package greyvarEditor.ui.components;
 
 import greyvarEditor.ui.windows.WindowTextureChooser;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
+import greyvarEditor.utils.EditLayerMode;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,15 +24,23 @@ public class ComponentTextureViewer extends JPanel implements WindowTextureChoos
  
 		@Override
 		public void click() {
-			new WindowTextureChooser(ComponentTextureViewer.this);
+			new WindowTextureChooser(ComponentTextureViewer.this, mode);
 		}
 	};
-
+ 
 	public ComponentTextureViewer() {
-		this(false);
+		this(false, null);
 	}
+	
+	public ComponentTextureViewer(boolean chooserButton, Texture t) {
+		this(chooserButton, t, EditLayerMode.TILES);  
+	}
+	
+	private EditLayerMode mode;
 
-	public ComponentTextureViewer(boolean chooserButton) {
+	public ComponentTextureViewer(boolean chooserButton, Texture t, EditLayerMode mode) {
+		this.mode = mode;
+		
 		this.lblTex.setText("No texture");
 		this.lblTex.setPreferredSize(new Dimension(200, 200));
 		this.lblTex.setBackground(Color.GRAY);
@@ -43,6 +52,8 @@ public class ComponentTextureViewer extends JPanel implements WindowTextureChoos
 		if (chooserButton) {
 			this.add(this.btnChoose, BorderLayout.EAST);
 		}
+		
+		this.setTex(t);
 	}
 
 	public ComponentTextureViewer(Texture t) {
@@ -60,6 +71,10 @@ public class ComponentTextureViewer extends JPanel implements WindowTextureChoos
 	}
 
 	public void setTex(Texture tex) {
+		if (tex == null) {
+			return;
+		}
+		
 		this.tex = tex;
 		this.lblTex.setIcon(new ImageIcon(tex.image));
 		this.lblTex.setText(tex.getId());

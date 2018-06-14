@@ -32,7 +32,7 @@ public class Tile {
 			case SOUTH:
 				return 180;
 			case WEST:
-				return 270;
+				return 270; 
 			default:
 				return 0;
 			}
@@ -57,14 +57,10 @@ public class Tile {
 	}
 
 	public String getTextureFilenameOnly() {
-		File f = new File(GameResources.dirTextures, "tiles");
-		String s = this.tex.getFilename().getAbsolutePath().replace(f.getAbsolutePath() + File.separator, "");
-		Logger.messageDebug("Filename on tile is: " + s); 
-
-		return s;
+		return this.tex.getFilename();
 	}
 
-	@Override
+	@Override  
 	public String toString() {
 		return "Tile {tex: " + this.tex.toString() + "}";
 	}

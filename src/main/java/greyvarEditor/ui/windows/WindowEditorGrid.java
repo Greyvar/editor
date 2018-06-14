@@ -1,15 +1,17 @@
 package greyvarEditor.ui.windows;
 
+import greyvarEditor.Entity;
 import greyvarEditor.Tile;
 import greyvarEditor.files.GridFile;
 import greyvarEditor.ui.components.ComponentGridEditor;
-import greyvarEditor.ui.components.ComponentGridEditor.ImageMatrixCellChangeListener;
 import greyvarEditor.ui.menubars.MenuBarEditorGrid;
 import greyvarEditor.ui.windows.editors.grid.panels.PanAppearance;
+import greyvarEditor.ui.windows.editors.grid.panels.PanEntity;
 import greyvarEditor.ui.windows.editors.grid.panels.PanFocus;
 import greyvarEditor.ui.windows.editors.grid.panels.PanPhysics;
 import greyvarEditor.ui.windows.editors.grid.panels.PanTransport;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
+import greyvarEditor.utils.EditLayerMode;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -29,16 +31,19 @@ import javax.swing.event.InternalFrameEvent;
 import jwrCommonsJava.Configuration;
 import jwrCommonsJava.Logger;
 
-public class WindowEditorGrid extends PopableWindow implements ImageMatrixCellChangeListener {
+public class WindowEditorGrid extends PopableWindow {
 
-	public final ComponentGridEditor gridEditor;
-
+	public final ComponentGridEditor gridEditor; 
+	
+	private final MenuBarEditorGrid mnu = new MenuBarEditorGrid(this);
+ 
 	private JSplitPane sp;
 
 	private final PanFocus panFocus = new PanFocus();
-	private final PanAppearance panAppearance = new PanAppearance();
-	private final PanPhysics panPhysics = new PanPhysics();
+	public final PanAppearance panAppearance = new PanAppearance();
+	private final PanPhysics panPhysics = new PanPhysics(); 
 	private final PanTransport panTransport = new PanTransport();
+	public final PanEntity panEntity = new PanEntity();  
  
 	private final GridFile gf;
 
@@ -50,10 +55,12 @@ public class WindowEditorGrid extends PopableWindow implements ImageMatrixCellCh
 				WindowEditorGrid.this.windowClose();
 			}
 		});
-
+ 
 		this.gf = gf;
 		this.gridEditor = new ComponentGridEditor(this);
 		this.gridEditor.setGridFile(gf);
+		 
+		this.setEditMode(EditLayerMode.TILES); 
 
 		this.setVisible(true);
 		this.setTitle("Grid Editor - " + gf.getFilename());
@@ -77,6 +84,29 @@ public class WindowEditorGrid extends PopableWindow implements ImageMatrixCellCh
 			this.gridEditor.blanketTextureEverything(t);
 		}
 	}
+	
+	public void setEditMode(EditLayerMode mode) {
+		this.gridEditor.setEditMode(mode); 
+		
+		switch (mode) { 
+		case TILES:
+			this.panFocus.setEnabled(true);
+			this.panPhysics.setEnabled(true);
+			this.panTransport.setEnabled(true);
+			break;
+		case ENTITIES: 
+			this.panFocus.setEnabled(false); 
+			this.panPhysics.setEnabled(false); 
+			this.panTransport.setEnabled(false);
+		case FLUIDS:
+			this.panFocus.setEnabled(false);
+			this.panPhysics.setEnabled(false); 
+			this.panTransport.setEnabled(false);
+			break; 
+		} 
+		 
+		this.mnu.toggleLayerButtons();
+	}
 
 	public GridFile getGridFile() {
 		return this.gf;
@@ -86,22 +116,16 @@ public class WindowEditorGrid extends PopableWindow implements ImageMatrixCellCh
 		return new ImageIcon(this.gridEditor.getScreenshot());
 	}
 
-	@Override
-	public void onCellApplyPaint(int x, int y, Tile tile) {
-		tile.tex = this.panAppearance.getCurrentTexture();
-	}
-
-	@Override
-	public void onCellFocus(int x, int y, Tile t) {
-		this.panFocus.setFocus(x, y, t);
+	public void onCellFocus(int x, int y, Tile t, Entity e) {
+		this.panFocus.setFocus(x, y, t, e);
 		this.panPhysics.updateInterface(t);
 		this.panTransport.updateSelectedTile(x, y, t);
-	}
+	} 
 
-	@Override
-	public void onCellSelected(int currx, int curry, Tile tile) {
+	public void onCellSelected(int currx, int curry, Tile tile, Entity entity) {
 		this.panAppearance.setCurrentTexture(tile.tex);
-		this.panFocus.setFocus(currx, curry, tile);
+		this.panEntity.setCurrentEntity(entity); 
+		this.panFocus.setFocus(currx, curry, tile, entity);
 	}
 
 	public void reload() { 
@@ -110,7 +134,7 @@ public class WindowEditorGrid extends PopableWindow implements ImageMatrixCellCh
 	}
 
 	private void setupComponents() {
-		this.setJMenuBar(new MenuBarEditorGrid(this));
+		this.setJMenuBar(this.mnu);
 
 		JPanel panControls = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, 1, new Insets(6, 6, 6, 6), 0, 0);
@@ -120,11 +144,14 @@ public class WindowEditorGrid extends PopableWindow implements ImageMatrixCellCh
 
 		gbc.gridy++;
 		panControls.add(this.panAppearance, gbc);
+		
+		gbc.gridy++; 
+		panControls.add(this.panEntity, gbc);
 
-		gbc.weighty = 1;
 		gbc.gridy++;
 		panControls.add(this.panPhysics, gbc);
 
+		gbc.weighty = 1;
 		gbc.gridy++;
 		panControls.add(this.panTransport, gbc);
 

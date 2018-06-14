@@ -2,6 +2,7 @@ package greyvarEditor.files;
 
 import java.io.File;
 
+import greyvarEditor.Entity;
 import greyvarEditor.Tile;
 
 public interface GridFile { 
@@ -17,6 +18,12 @@ public interface GridFile {
 
 	public void save();
 
-	public File getFile();    
+	public File getFile(); 
+
+	public Entity[][] getEntityList();   
+	
+	public int nextEntityId();
+
+	public void grow(int i, int j);  
 }
  

@@ -54,24 +54,18 @@ public class TextureCache {
 	private final HashMap<String, Texture> textureCacheOriginals = new HashMap<String, Texture>();
 	private final HashMap<MutatedTexture, Texture> textureCacheMutated = new HashMap<MutatedTexture, Texture>();
 
-	public static TextureCache instance = new TextureCache();
+	public static TextureCache instanceTiles = new TextureCache("tiles");
+	public static TextureCache instanceEntities = new TextureCache("entities");
+	public static TextureCache instanceFluids = new TextureCache("fluids");
 
 	private Texture defaultTexture;
+	File baseDir;
 
-	static {
-		try {
-			File defaultImage = new File(GameResources.dirTextures + "/tiles/construct.png");
-			TextureCache.instance.defaultTexture = new Texture(ImageIO.read(defaultImage), defaultImage);
-			TextureCache.instance.textureCacheOriginals.put("[default]", TextureCache.instance.defaultTexture);
-			TextureCache.instance.loadTextures("tiles/");
-		} catch (Exception e) {
-			Logger.messageException(e, "Could not load default texture.");
-		}
-	}
-
-	private TextureCache() {
-		Logger.messageDebug("texture cache constructing from dir: " + GameResources.dirTextures);
-		this.loadTex(new File(GameResources.dirTextures, "hud/arrow.png").getAbsolutePath());
+	private TextureCache(String subdir) {
+		Logger.messageDebug("texture cache constructing from subdir: " + subdir);
+		
+		this.baseDir = new File(GameResources.dirTextures, subdir); 
+		this.defaultTexture = this.loadTex(new File(baseDir, "construct.png")); 
 	}
 
 	public HashMap<String, Texture> getAll() {
@@ -82,16 +76,24 @@ public class TextureCache {
 		return this.defaultTexture;
 	}
 
-	private Texture getTex(String name) {
+	public Texture getTex(String name) {
+		return this.getTex(name, 0);     
+	}
+	
+	private Texture getOriginalTexture(String name) {
 		if (this.textureCacheOriginals.containsKey(name)) {
 			return this.textureCacheOriginals.get(name);
 		} else {
 			return this.loadTex(name);
 		}
 	}
-
-	private Texture getTex(String name, int rot, boolean flipV, boolean flipH) {
-		Texture t = this.getTex(name);
+	
+	public Texture getTex(String name, int rot) {  
+		return this.getTex(name, rot, false, false); 
+	}
+ 
+	public Texture getTex(String name, int rot, boolean flipV, boolean flipH) { 
+		Texture t = this.getOriginalTexture(name);
 
 		if ((rot == 0) && !flipH && !flipV) {
 			return t;
@@ -110,14 +112,10 @@ public class TextureCache {
 				return mutatedTexture;
 			}
 		}
-	}
-
-	public Texture getTexHud(String texName, int rotation) {
-		return this.getTex(File.separator + "hud" + File.separator + texName, rotation, false, false);
-	}
-
-	public Texture getTexTile(String texName, int rotation, boolean flipV, boolean flipH) {
-		return this.getTex(File.separator + "tiles" + File.separator + texName, rotation, flipV, flipH);
+	} 
+	
+	private Texture loadTex(File f) {
+		return this.loadTex(f.getName()); 
 	}
 
 	private Texture loadTex(String texName) {
@@ -125,25 +123,17 @@ public class TextureCache {
 			return this.defaultTexture;
 		}
 
-		if (!texName.contains(GameResources.dirTextures.getAbsolutePath())) {
-			Logger.messageWarning("Not loading a tex outside the normal dir: " + texName);
-
-			return this.defaultTexture;
-		} else {
-			texName = texName.replace(GameResources.dirTextures.getAbsolutePath(), "");
-		}
-
 		if (this.textureCacheOriginals.containsKey(texName)) {
-			Logger.messageDebug("Reploacing texture filename; " + texName);
+			Logger.messageDebug("Replacing texture filename; " + texName);
 			this.textureCacheOriginals.remove(texName);
 		}
 
 		try {
-			File f = new File(GameResources.dirTextures + "/" + texName);
+			File f = new File(baseDir + "/" + texName);
 			Image i = ImageIO.read(f);
 			Texture tex = new Texture(i, f);
-
-			Logger.messageDebug("Loaded tex: " + texName);
+   
+			Logger.messageDebug("Loaded tex (" + this.baseDir.getName() + " cache): " + texName);
 			this.textureCacheOriginals.put(texName, tex);
 
 			return tex;
@@ -151,17 +141,16 @@ public class TextureCache {
 			Logger.messageWarning("Failed to load: " + texName + " because: " + e.getMessage());
 			this.textureCacheOriginals.put(texName, this.defaultTexture);
 		}
-
-		return this.defaultTexture;
+		
+		return this.defaultTexture; 
 	}
-
-	public void loadTextures(String textureDir) {
-		File textureDirectory = new File(GameResources.dirTextures, textureDir);
-		Logger.messageDebug("Loading textures from directory: " + textureDirectory.getAbsolutePath());
-
-		for (File f : textureDirectory.listFiles()) {
+  
+	public void loadTextures() {
+		Logger.messageDebug("Loading textures from directory: " + baseDir.getAbsolutePath());
+ 
+		for (File f : baseDir.listFiles()) {
 			if (f.getName().endsWith(".png")) {
-				this.loadTex(f.getAbsolutePath());
+				this.loadTex(f.getName());  
 			}
 		}
 	}

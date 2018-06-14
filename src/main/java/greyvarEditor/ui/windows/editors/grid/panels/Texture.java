@@ -26,10 +26,21 @@ public class Texture {
 	@Override
 	public Texture clone() {
 		BufferedImage bi = new BufferedImage(this.image.getWidth(null), this.image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-		Graphics g = bi.getGraphics();
+		Graphics g = bi.getGraphics(); 
 		g.drawImage(this.image, 0, 0, this.image.getWidth(null), this.image.getHeight(null), null);
 
 		return new Texture(bi, this.filename);
+	}
+	
+	public Image getInactive() { 
+		BufferedImage bi = new BufferedImage(this.image.getWidth(null), this.image.getHeight(null), BufferedImage.TYPE_INT_ARGB); 
+		Graphics g = bi.getGraphics();
+		g.setColor(new Color(1f, 1f, 1f, .5f));  
+		
+		g.drawImage(this.image, 0, 0, this.image.getWidth(null), this.image.getHeight(null), null);
+		g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+		
+		return bi;
 	}
 
 	public void flip(boolean flipV, boolean flipH) {
@@ -59,8 +70,8 @@ public class Texture {
 		}
 	}
 
-	public File getFilename() {
-		return this.filename;
+	public String getFilename() { 
+		return this.filename.getName();
 	}
 
 	public String getId() {
@@ -70,7 +81,6 @@ public class Texture {
 	public void rotate(int rot) {
 		this.rot = rot;
 		this.rot = (this.rot >= 360) ? this.rot - 360 : this.rot;
-		Logger.messageDebug("rot to: " + this.rot);
 
 		BufferedImage bi = new BufferedImage(this.image.getWidth(null), this.image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 

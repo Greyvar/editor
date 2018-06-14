@@ -1,9 +1,12 @@
 package greyvarEditor.ui.components;
 
+import greyvarEditor.Entity;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
 import greyvarEditor.files.GridFile;
+import greyvarEditor.ui.windows.WindowEditorGrid;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
+import greyvarEditor.utils.EditLayerMode;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,30 +24,25 @@ import java.util.Vector;
 import javax.swing.JComponent;
 
 public class ComponentGridEditor extends JComponent implements MouseListener, MouseMotionListener {
-	public interface ImageMatrixCellChangeListener {
-		void onCellApplyPaint(int x, int y, Tile tile);
-
-		void onCellFocus(int x, int y, Tile tile);
-
-		void onCellSelected(int currx, int curry, Tile tile);
-	}
+	private EditLayerMode currentEditMode = EditLayerMode.TILES;  
 
 	private int currx;
 	private int curry;
 
 	private Tile[][] tileList;
-
-	private final ImageMatrixCellChangeListener listener;
+	private Entity[][] entityList;  
 
 	private GridFile gf;
 	private Tile lastHoveredTile;
 	private int selectionRectSize = 1;
 	public boolean highlightTeleports = false;
 	public boolean highlightTraversable = false;
+	   
+	private final WindowEditorGrid windowEditorGrid; 
 
-	public ComponentGridEditor(ImageMatrixCellChangeListener l) {
-		this.listener = l;
-
+	public ComponentGridEditor(WindowEditorGrid windowEditorGrid) {
+		this.windowEditorGrid = windowEditorGrid; 
+		
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		this.setPreferredSize(new Dimension(50, 50));
@@ -78,7 +76,7 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		return this.tileList[x][y];
 	}
 
-	public Point getTileAt(Point p) {
+	public Point getCellAt(Point p) {
 		int w = this.getWidth() / gf.getGridWidth();
 		int h = this.getHeight() / gf.getGridHeight();
 
@@ -121,7 +119,7 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Point p = this.getTileAt(e.getPoint());
+		Point p = this.getCellAt(e.getPoint());
 
 		if ((p.x < gf.getGridWidth()) && (p.y < gf.getGridHeight())) {
 			Tile t = this.tileList[p.x][p.y];
@@ -140,22 +138,32 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 	@Override 
 	public void mousePressed(MouseEvent e) {
-		Point p = this.getTileAt(e.getPoint());
+		Point p = this.getCellAt(e.getPoint());
 
 		this.currx = p.x;
 		this.curry = p.y;
 
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (e.getClickCount() > 1) {
-				this.listener.onCellSelected(this.currx, this.curry, this.tileList[p.x][p.y]);
+			if (e.getClickCount() > 1) { 
+				this.windowEditorGrid.onCellSelected(this.currx, this.curry, this.tileList[p.x][p.y], this.entityList[p.x][p.y]);
 			} else {
-				this.listener.onCellFocus(this.currx, this.curry, this.tileList[p.x][p.y]);
+				this.windowEditorGrid.onCellFocus(this.currx, this.curry, this.tileList[p.x][p.y], this.entityList[p.x][p.y]);
 			}
-		} else if (e.getButton() == MouseEvent.BUTTON3) {
-			this.listener.onCellApplyPaint(this.currx, this.curry, this.tileList[p.x][p.y]);
-		}
+		} else if (e.getButton() == MouseEvent.BUTTON3) { 
+			this.onCellApplyPaint(this.currx, this.curry);
+		} 
 
-		this.repaint();
+		this.repaint(); 
+	} 
+	
+	private void onCellApplyPaint(int x, int y) {
+		switch (this.currentEditMode) {
+		case ENTITIES:  
+			this.entityList[x][y] = windowEditorGrid.panEntity.getNewSelected(this.getGridFile().nextEntityId());
+			break;
+		case TILES: 
+			this.tileList[x][y].tex = windowEditorGrid.panAppearance.getCurrentTexture();
+		} 
 	}
 
 	@Override
@@ -172,7 +180,26 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 				this.paintTile(g, x, y, this.tileList[x][y], w, h);
 			}
 		} 
+		
+		if (this.getEditLayerMode() == EditLayerMode.ENTITIES) {
+			g.setColor(new Color(255, 255, 255, 100));   
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());  
+		}  
+		
+		for (int x = 0; x < gf.getGridWidth(); x++) {
+			for (int y = 0; y < gf.getGridWidth(); y++) {
+				this.paintEntity(g, x, y, this.entityList[x][y], w, h);
+			}
+		} 
 	}
+	
+	public void paintEntity(Graphics g, int x, int y, Entity e, int w, int h) {
+		if (e == null || e.tex == null) {
+			return;
+		} else {
+			g.drawImage(e.tex.image, x * w, y * h, w, h, null); 
+		}
+	} 
 
 	public void paintTile(Graphics g, int x, int y, Tile t, int w, int h) {
 		if (t == null) {
@@ -193,7 +220,7 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		if (this.highlightTeleports && !t.teleportDestinationGrid.isEmpty()) {
 			g.setColor(Color.ORANGE);
 			g.fillOval((x * w) + (w / 4), (y * h) + (h / 4), w / 2, h / 2);
-			Texture i = TextureCache.instance.getTexHud("arrow.png", t.teleportDirection.getDegrees());
+			Texture i = TextureCache.instanceEntities.getTex("arrow.png", t.teleportDirection.getDegrees()); 
 			g.drawImage(i.image, (x * w) + (w / 4), (y * h) + (h / 4), w / 2, h / 2, null);
 		}
 
@@ -231,7 +258,8 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 	public void setGridFile(GridFile gf) {
 		this.gf = gf;
-		this.tileList = gf.getTileList();
+		this.tileList = gf.getTileList(); 
+		this.entityList = gf.getEntityList(); 
 		this.repaint(); 
 	}
 
@@ -241,5 +269,13 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 	public void setTileAt(int x, int y, Tile tile) {
 		this.tileList[x][y] = tile;
+	}
+
+	public void setEditMode(EditLayerMode mode) {
+		this.currentEditMode = mode;
+	}
+  
+	public EditLayerMode getEditLayerMode() {
+		return this.currentEditMode;
 	}
 }

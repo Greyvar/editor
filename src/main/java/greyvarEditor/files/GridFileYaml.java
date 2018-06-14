@@ -18,17 +18,20 @@ import com.fasterxml.jackson.dataformat.yaml.UTF8Reader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 
+import greyvarEditor.Entity;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
 import jwrCommonsJava.Logger;
 
 public class GridFileYaml implements GridFile {
-	@JsonInclude(JsonInclude.Include.ALWAYS) 
-	private Tile[][] tiles; 
+	private Tile[][] tiles;
+	private Entity[][] entities; 
 	private int gridWidth;
 	private int gridHeight;
+	private int lastEntityId;  
 	
-	private transient File f; 
+	private transient File f;
+	
 	
 	@Override
 	@Transient  
@@ -37,7 +40,7 @@ public class GridFileYaml implements GridFile {
 	}
 
 	public GridFileYaml(File f) {
-		this.f = f;
+		this.f = f; 
 		
 		this.initMap(); 
 		this.load();
@@ -46,16 +49,19 @@ public class GridFileYaml implements GridFile {
 	private void initMap() {
 		this.gridWidth = 16;
 		this.gridHeight = 16; 
+		this.lastEntityId = 0; 
 		
 		this.tiles = new Tile[gridWidth][gridHeight];
+		this.entities = new Entity[gridWidth][gridHeight]; 
 
 		for (int x = 0; x < gridWidth; x++) { 
-			for (int y = 0; y < gridHeight; y++) {
-				this.tiles[x][y] = new Tile(TextureCache.instance.getDefault()); 
+			for (int y = 0; y < gridHeight; y++) { 
+				this.tiles[x][y] = new Tile(TextureCache.instanceTiles.getDefault());  
+				this.entities[x][y] = null;  
 			}
 		}
 	}
- 
+  
 	@Override
 	public Tile[][] getTileList() {
 		return tiles; 
@@ -63,7 +69,7 @@ public class GridFileYaml implements GridFile {
 
 	@Override 
 	public String getFilename() {
-		return f.getName();
+		return f.getName(); 
 	}
 
 	@Override
@@ -88,16 +94,22 @@ public class GridFileYaml implements GridFile {
 						case "tiles":
 							loadTileList(p);
 							break; 
+						case "entities":
+							loadEntityList(p);
+							break;
 						case "width":
 							this.gridWidth = p.nextIntValue(16);
 							break;
 						case "height":
 							this.gridHeight = p.nextIntValue(16);
 							break;
+						case "lastEntityId":
+							this.lastEntityId = p.nextIntValue(0);
+							break;  
 						default: 
 							Logger.messageDebug("Unhandled field: " + p.currentName());
 					} 
-					
+					 
 					break; 
 				case VALUE_STRING:
 					break; 
@@ -117,6 +129,65 @@ public class GridFileYaml implements GridFile {
 		 
 		System.out.println("Unhandled token: " + t + "(" + p.getCurrentValue() + "). line: " + loc.getLineNr() + " pos " + loc.getColumnNr()); 
 	}
+	
+	private void loadEntityList(YAMLParser p)  {
+		boolean endOfList = false;
+		
+		int x = -1;
+		int y = -1;
+		int id = -1; 
+		String filename = "";
+		
+		try {
+			while (p.hasCurrentToken()) {
+				JsonToken t = p.nextToken();
+				
+				if (t == null) {
+					break; 
+				}
+				
+				switch(t) {
+				case START_ARRAY:
+					break;
+				case START_OBJECT:
+					x = -1;
+					y = -1;
+					id = -1;
+					filename = "";
+					
+					break;
+				case END_ARRAY: 
+					endOfList = true;
+				case END_OBJECT:   
+					if (x == -1 || y == -1) {
+						continue;
+					} 
+					
+					Entity e = new Entity(TextureCache.instanceEntities.getTex(filename), id);    
+					
+					this.entities[x][y] = e;
+					break;
+				case FIELD_NAME:
+					switch(p.currentName()) {
+					case "x": 
+						x = p.nextIntValue(-1);
+						break;
+					case "y": 
+						y = p.nextIntValue(-1);
+						break;
+					case "id": 
+						id = p.nextIntValue(-1);
+						break;
+					case "texture":
+						filename = p.nextTextValue();
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace(); 
+		}
+	}
 
 	private void loadTileList(YAMLParser p) {
 		boolean endOfList = false;
@@ -128,8 +199,6 @@ public class GridFileYaml implements GridFile {
 		boolean flipH = false;
 		boolean flipV = false;
 		String texture = ""; 
-		
-		System.out.println("tile list"); 
 		
 		try { 
 			while (p.hasCurrentToken()) {
@@ -152,8 +221,8 @@ public class GridFileYaml implements GridFile {
 				case END_ARRAY:  
 					endOfList = true;
 					// fall through to end the last object
-				case END_OBJECT: 
-					Tile tile = new Tile(TextureCache.instance.getTexTile(texture, rot, flipV, flipH));
+				case END_OBJECT:  
+					Tile tile = new Tile(TextureCache.instanceTiles.getTex(texture, rot, flipV, flipH));
 					tile.traversable = traversable;
 					
 					this.tiles[x][y] = tile;
@@ -219,6 +288,7 @@ public class GridFileYaml implements GridFile {
 			gen.writeStartObject();
 			gen.writeNumberField("width", this.gridWidth);
 			gen.writeNumberField("height", this.gridHeight);
+			gen.writeNumberField("lastEntityId", this.lastEntityId);
 			
 			gen.writeFieldName("tiles");
 			gen.writeStartArray();
@@ -246,6 +316,27 @@ public class GridFileYaml implements GridFile {
 				} 
 			} 
 			gen.writeEndArray();
+			
+			gen.writeFieldName("entities");
+			gen.writeStartArray();
+			for (int x = 0; x < gridWidth; x++) {
+				for (int y = 0; y < gridHeight; y++) {
+					Entity e = this.entities[x][y];
+ 
+					if (e == null || e.tex == null) {
+						continue;
+					}
+					
+					gen.writeStartObject();
+					gen.writeNumberField("x", x);
+					gen.writeNumberField("y", y);   
+					gen.writeNumberField("id", e.id); 
+					gen.writeStringField("texture", this.entities[x][y].tex.getFilename());
+					
+					gen.writeEndObject();
+				}
+			}
+			gen.writeEndArray();
  		
 			fw.close();
 		} catch (Exception e) {
@@ -255,6 +346,24 @@ public class GridFileYaml implements GridFile {
 
 	public void setTileList(Tile[][] tileList) {
 		this.tiles = tileList;		
+	}
+
+	@Override 
+	public Entity[][] getEntityList() {
+		return this.entities; 
+	}
+
+	@Override 
+	public int nextEntityId() {
+		this.lastEntityId++;
+		
+		return this.lastEntityId;
+	}
+
+	@Override
+	public void grow(int w, int h) {
+		this.gridWidth += w;
+		this.gridHeight += h;
 	}
 
 }

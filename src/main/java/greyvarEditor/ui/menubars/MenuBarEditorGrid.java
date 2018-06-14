@@ -6,7 +6,9 @@ import greyvarEditor.files.GridFileLoader;
 import greyvarEditor.ui.windows.PopableWindow;
 import greyvarEditor.ui.windows.WindowEditorGrid;
 import greyvarEditor.ui.windows.WindowFindReplace;
+import greyvarEditor.ui.windows.WindowResizeGrid;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
+import greyvarEditor.utils.EditLayerMode;
 import greyvarEditor.utils.TextureProertiesReader;
 
 import java.awt.event.ActionEvent;
@@ -22,6 +24,7 @@ import jwrCommonsJava.Logger;
 
 public class MenuBarEditorGrid extends JMenuBar implements ActionListener, PopableWindow.Listener {
 	private final JMenuItem mniSave = new JMenuItem("Save");
+	private final JMenuItem mniResize = new JMenuItem("Resize"); 
 	private final JMenuItem mniDebug = new JMenuItem("Debug");
 	private final JMenuItem mniReload = new JMenuItem("Reload grid from disk");
 	private final JMenuItem mniPopper = new JMenuItem("Pop");
@@ -29,12 +32,12 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 	private final JMenuItem mniRectSize1x1 = new JMenuItem("1x1");
 	private final JMenuItem mniRectSize3x3 = new JMenuItem("3x3");
 	private final WindowEditorGrid windowEditorGrid;
-	private final JMenuItem mniBlanketTextureEverything = new JMenuItem("Blanket texture everything");
+	private final JMenuItem mniBlanketTextureEverything = new JMenuItem("Blanket texture everything"); 
 	
 	private final JMenu mnuLayers = new JMenu("Layers");
-	private final JMenuItem mniTiles = new JMenuItem("1. Tiles");
-	private final JMenuItem mniEntities = new JMenuItem("2. Entities");
-	private final JMenuItem mniFluids = new JMenuItem("3. Fluids");  
+	private final JMenuItem mniEditLayerModeTiles = new JMenuItem("1. Tiles");
+	private final JMenuItem mniEditLayerModeEntities = new JMenuItem("2. Entities");
+	private final JMenuItem mniEditLayerModeFluids = new JMenuItem("3. Fluids");  
 	
 	private final JMenu mnuHighlight = new JMenu("Highlight"); 
 	private final JCheckBoxMenuItem mniHighlightTeleports = new JCheckBoxMenuItem("Telports");
@@ -49,7 +52,7 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 		this.windowEditorGrid = windowEditorGrid;
 		windowEditorGrid.addListener(this);
 		this.setupComponents();
-	}
+	} 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -58,13 +61,16 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 		if (source == this.mniSave) {
 			this.onMniSaveClicked();
 		} else if (source == this.mniDebug) {
-			Map<String, Texture> textures = TextureCache.instance.getAll();
+			Map<String, Texture> textures = TextureCache.instanceTiles.getAll();
 
 			for (String texName : textures.keySet()) {
 				Logger.messageDebug(texName + ": " + textures.get(texName));
 			}
 		} else if (source == this.mniReload) {
 			this.windowEditorGrid.reload();
+		} else if (source == mniResize) { 
+			WindowResizeGrid resizer = new WindowResizeGrid(this.windowEditorGrid);
+			resizer.setVisible(true); 
 		} else if (source == this.mniPopper) {
 			this.windowEditorGrid.pop();
 		} else if (source == this.mniRectSize1x1) {
@@ -73,6 +79,15 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 			this.windowEditorGrid.gridEditor.setSelectionRectSize(3);
 		} else if (source == this.mniBlanketTextureEverything) {
 			this.windowEditorGrid.blanketTextureEverything();
+		} else if (source == this.mniEditLayerModeTiles) {
+			this.windowEditorGrid.setEditMode(EditLayerMode.TILES);
+			this.toggleLayerButtons();
+		} else if (source == this.mniEditLayerModeFluids) { 
+			this.windowEditorGrid.setEditMode(EditLayerMode.FLUIDS);
+			this.toggleLayerButtons();
+		} else if (source == this.mniEditLayerModeEntities) {
+			this.windowEditorGrid.setEditMode(EditLayerMode.ENTITIES);
+			this.toggleLayerButtons();
 		} else if (source == this.mniHighlightTeleports) {
 			this.windowEditorGrid.gridEditor.highlightTeleports = this.mniHighlightTeleports.getState();
 			this.windowEditorGrid.gridEditor.repaint();
@@ -82,10 +97,29 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 		} else if (source == this.mniLoadTextureAttributes) {
 			new TextureProertiesReader();
 		} else if (source == this.mniReloadTextures) {		
-			TextureCache.instance.loadTextures("tiles/");
+			TextureCache.instanceTiles.loadTextures();
+			TextureCache.instanceEntities.loadTextures();   
 			this.windowEditorGrid.reload();
 		} else if (source == this.mniFindReplace) {
 			new WindowFindReplace(this.windowEditorGrid);
+		}
+	}
+	
+	public void toggleLayerButtons() {
+		this.mniEditLayerModeTiles.setEnabled(true); 
+		this.mniEditLayerModeEntities.setEnabled(true); 
+		this.mniEditLayerModeFluids.setEnabled(true); 
+		
+		switch (this.windowEditorGrid.gridEditor.getEditLayerMode()) {
+		case TILES: 
+			this.mniEditLayerModeTiles.setEnabled(false);
+			break;
+		case ENTITIES:
+			this.mniEditLayerModeEntities.setEnabled(false); 
+			break;
+		case FLUIDS:  
+			this.mniEditLayerModeFluids.setEnabled(false); 
+			break; 
 		}
 	}
 
@@ -110,6 +144,9 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 
 		this.mniReload.addActionListener(this);
 		this.mnuEditor.add(this.mniReload);
+		
+		this.mniResize.addActionListener(this); 
+		this.mnuEditor.add(this.mniResize);
 
 		this.mnuEditor.addSeparator();
 
@@ -139,12 +176,17 @@ public class MenuBarEditorGrid extends JMenuBar implements ActionListener, Popab
 		this.mnuHighlight.add(this.mniHighlightTraversable);
 
 		this.add(this.mnuHighlight);
-	}
+	} 
 	
 	private void setupLayerMenu() {
-		this.mnuLayers.add(mniTiles);
-		this.mnuLayers.add(mniEntities);
-		this.mnuLayers.add(mniFluids); 
+		this.mniEditLayerModeTiles.addActionListener(this); 
+		this.mnuLayers.add(mniEditLayerModeTiles); 
+		
+		this.mniEditLayerModeEntities.addActionListener(this);
+		this.mnuLayers.add(mniEditLayerModeEntities);
+		
+		this.mniEditLayerModeFluids.addActionListener(this);
+		this.mnuLayers.add(mniEditLayerModeFluids); 
 		this.add(this.mnuLayers);
 	}
 

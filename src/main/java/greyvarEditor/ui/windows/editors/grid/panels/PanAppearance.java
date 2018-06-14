@@ -1,8 +1,11 @@
 package greyvarEditor.ui.windows.editors.grid.panels;
 
+import greyvarEditor.Entity;
 import greyvarEditor.TextureCache;
+import greyvarEditor.Tile;
 import greyvarEditor.ui.components.ComponentTextureViewer;
 import greyvarEditor.ui.windows.WindowTextureChooser;
+import greyvarEditor.utils.EditLayerMode;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -16,7 +19,7 @@ import jwrCommonsJava.ui.JButtonWithAl;
 
 public class PanAppearance extends JPanel implements WindowTextureChooser.Listener {
 	private final JCheckBox chkPaintTexture = new JCheckBox("Paint");
-	private final ComponentTextureViewer texViewer = new ComponentTextureViewer();
+	private final ComponentTextureViewer texViewerTile = new ComponentTextureViewer();
 	private final JButton btnRotate;
 	private final JButton btnFlipH;
 	private final JButton btnFlipV;
@@ -31,13 +34,13 @@ public class PanAppearance extends JPanel implements WindowTextureChooser.Listen
 
 		this.setBorder(BorderFactory.createTitledBorder("Appearance"));
 		this.setLayout(new BorderLayout());
-		this.add(this.texViewer, BorderLayout.CENTER);
+		this.add(this.texViewerTile, BorderLayout.CENTER);
 		JButton btnShowTextureChooser = new JButtonWithAl("Choose tex") {
 			@Override
-			public void click() {
-				new WindowTextureChooser(PanAppearance.this);
+			public void click() { 
+				new WindowTextureChooser(PanAppearance.this, EditLayerMode.TILES);
 			}
-		};
+		}; 
 
 		this.add(btnShowTextureChooser, BorderLayout.EAST);
 		this.add(this.panControls, BorderLayout.SOUTH);
@@ -73,7 +76,7 @@ public class PanAppearance extends JPanel implements WindowTextureChooser.Listen
 	}
 
 	public Texture getCurrentTexture() {
-		return this.texViewer.getTexture();
+		return this.texViewerTile.getTexture();
 	}
 
 	private void onBtnRotateClicked() {
@@ -101,24 +104,19 @@ public class PanAppearance extends JPanel implements WindowTextureChooser.Listen
 	public void onTexChoose(Texture tex) {
 		this.setCurrentTexture(tex);
 	}
-
+ 
 	public void setCurrentTexture(Texture tex) {
-		if (tex == null) {
-			return;
-		}
-
-		this.texViewer.setTex(tex);
+		this.texViewerTile.setTex(tex);
 
 		this.btnRotate.setEnabled(true);
 		this.btnFlipH.setEnabled(true);
 		this.btnFlipV.setEnabled(true);
-
 	}
 
 	private void updateTexTile() {
-		Texture currentTexture = this.texViewer.getTexture();
-		Texture newTexture = TextureCache.instance.getTexTile(currentTexture.getFilename().getName(), this.rot, this.flipV, this.flipH);
-		this.texViewer.setTex(newTexture);
+		Texture currentTexture = this.texViewerTile.getTexture();  
+		Texture newTexture = TextureCache.instanceTiles.getTex(currentTexture.getFilename(), this.rot, this.flipV, this.flipH);
+		this.texViewerTile.setTex(newTexture);
 	}
 
 }

@@ -1,5 +1,6 @@
 package greyvarEditor.files;
 
+import greyvarEditor.Entity;
 import greyvarEditor.GameResources;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
@@ -54,7 +55,7 @@ class GridFileCsv extends CsvFile implements GridFile {
 
 		for (int x = 0; x < gridWidth; x++) { 
 			for (int y = 0; y < gridHeight; y++) {
-				this.tiles[x][y] = new Tile(TextureCache.instance.getDefault());
+				this.tiles[x][y] = new Tile(TextureCache.instanceTiles.getDefault());
 				Logger.messageDebug("Tile: " + x + ":" + y + "  " + this.tiles[x][y]);
 			}
 		}
@@ -78,8 +79,8 @@ class GridFileCsv extends CsvFile implements GridFile {
 		int rot = Integer.parseInt(lineBits[index++]);
 		boolean flipH = Boolean.parseBoolean(lineBits[index++]);
 		boolean flipV = Boolean.parseBoolean(lineBits[index++]);
-
-		Texture tex = TextureCache.instance.getTexTile(texName, rot, flipV, flipH);
+ 
+		Texture tex = TextureCache.instanceTiles.getTex(texName, rot, flipV, flipH);
 
 		Tile tile = new Tile(tex);
 		tile.traversable = Boolean.parseBoolean(lineBits[index++]);
@@ -123,5 +124,19 @@ class GridFileCsv extends CsvFile implements GridFile {
 	@Override
 	public int getGridWidth() {
 		return this.gridWidth; 
+	}
+
+	@Override
+	public Entity[][] getEntityList() {
+		return null;
+	}
+
+	@Override
+	public int nextEntityId() {
+		return 0;
+	}
+
+	@Override
+	public void grow(int i, int j) {
 	}
 }

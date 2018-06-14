@@ -32,9 +32,9 @@ public class WindowFindReplace extends JFrame {
 
 	private final WindowEditorGrid windowEditorGrid;
 
-	private final ComponentTextureViewer findTexture = new ComponentTextureViewer(true);
-
-	private final ComponentTextureViewer replTexture = new ComponentTextureViewer(true);
+	private final ComponentTextureViewer findTexture = new ComponentTextureViewer(true, null);
+ 
+	private final ComponentTextureViewer replTexture = new ComponentTextureViewer(true, null);
 
 	private final JCheckBox chkTraversable = new JCheckBox("Traversable");
 

@@ -1,7 +1,9 @@
 package greyvarEditor.ui.windows.editors.grid.panels;
 
+import greyvarEditor.Entity;
 import greyvarEditor.Tile;
 import greyvarEditor.ui.components.ComponentTextureViewer;
+import greyvarEditor.utils.EditLayerMode;
 
 import java.awt.GridLayout;
 
@@ -14,13 +16,13 @@ public class PanFocus extends JPanel {
 		this.setBorder(BorderFactory.createTitledBorder("Focus (red box)"));
 	}
 
-	public void setFocus(int x, int y, Tile t) {
-		this.removeAll();
+	public void setFocus(int x, int y, Tile t, Entity e) {
+		this.removeAll(); 
 		this.setLayout(new GridLayout(1, 0));
 		this.add(new JLabel("Cell: " + x + ":" + y));
-		this.add(new ComponentTextureViewer(t.tex));
-		this.doLayout();
-		this.repaint();
+		this.add(new ComponentTextureViewer(false, t.tex, EditLayerMode.ENTITIES));   
+		this.doLayout(); 
+		this.repaint(); 
 	}
 
 }
