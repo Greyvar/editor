@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import greyvarEditor.triggers.Trigger;
 import greyvarEditor.utils.YamlFile;
 import jwrCommonsJava.Logger;
 
@@ -18,7 +19,9 @@ public class WorldFile {
 	public String title = "unknown"; 
 	public String spawnGrid = "unknown"; 
 	  
-	public transient Vector<File> gridFiles = new Vector<File>(); 
+	public transient Vector<File> gridFiles = new Vector<File>();
+	
+	public Vector<Trigger> triggers = new Vector<>(); 
 
 	public static WorldFile load(File f) { 		
 		try {

@@ -35,7 +35,7 @@ public class WindowEditorWorld extends JInternalFrame  {
 		GridBagConstraints gbc = new GridBagConstraints(0,0,1,1,1,1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(6,6,6,6), 0, 0); 
 		
 		this.add(new JLabel("Author: " + worldFile.author), gbc);
-		
+		 
 		gbc.gridx++;
 		this.add(new JLabel("Spawn: " + worldFile.spawnGrid), gbc);
 		
@@ -44,8 +44,8 @@ public class WindowEditorWorld extends JInternalFrame  {
 		gbc.gridy++;
 		this.add(new JButtonWithAl("Triggers") {
 			@Override
-			public void click() {
-				new WindowTriggerList(worldFile);
+			public void click() { 
+				new WindowTriggerList(WindowMain.getInstance(), worldFile).setVisible(true);
 			}
 		}, gbc);
 		 
@@ -73,8 +73,8 @@ public class WindowEditorWorld extends JInternalFrame  {
 			this.add(btnGrid, gbc); 
 		}
 		
-		this.doLayout();
-		this.setVisible(true);   
+		this.pack();
+		this.setVisible(true);
 	}
 
 }
