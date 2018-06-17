@@ -5,10 +5,12 @@ import greyvarEditor.ui.menubars.MenuBarWindowMain;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -82,6 +84,10 @@ public class WindowMain extends JFrame {
 
 	private void setupComponents() {
 		this.setLayout(new BorderLayout());
+		
+		try { 
+			this.setIconImage(ImageIO.read(new File("res/logo.png")));
+		} catch (Exception e) {} 
 
 		ComponentWindowList winList = new ComponentWindowList();
 		this.addListener(winList);

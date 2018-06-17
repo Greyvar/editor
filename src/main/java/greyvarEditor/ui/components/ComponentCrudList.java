@@ -3,6 +3,7 @@ package greyvarEditor.ui.components;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -65,6 +66,7 @@ public abstract class ComponentCrudList<T> extends JPanel implements ListSelecti
 	
 	private void setupComponents() {
 		GridBagConstraints gbc = Util.getNewGbc();
+		gbc.insets = new Insets(0,0,0,0);    
 		
 		this.setLayout(new GridBagLayout());
 		
@@ -83,7 +85,7 @@ public abstract class ComponentCrudList<T> extends JPanel implements ListSelecti
 		gbc.gridy++;
 		gbc.gridx = 0;
 		
-		this.btnCreate = new JButtonWithAl("Create") {
+		this.btnCreate = new JButtonWithAl("+") {
 			
 			@Override
 			public void click() {
@@ -94,7 +96,7 @@ public abstract class ComponentCrudList<T> extends JPanel implements ListSelecti
 		 
 		gbc.weightx = 0; 
 		gbc.gridx++;
-		btnEdit = new JButtonWithAl("Edit") {
+		btnEdit = new JButtonWithAl("...") {
 			
 			@Override
 			public void click() {
@@ -109,7 +111,7 @@ public abstract class ComponentCrudList<T> extends JPanel implements ListSelecti
 		this.add(btnEdit, gbc);
 		
 		gbc.gridx++;
-		btnDelete = new JButtonWithAl("Delete") {
+		btnDelete = new JButtonWithAl("-") {
 			
 			@Override
 			public void click() {

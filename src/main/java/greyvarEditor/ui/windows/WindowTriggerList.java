@@ -58,6 +58,8 @@ public class WindowTriggerList extends JFrame {
 	} 
 	 
 	private void setupComponents() { 
+		this.setIconImage(WindowMain.getInstance().getIconImage());
+		
 		GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(6,6,6,6), 0, 0);  
 		this.setLayout(new GridBagLayout());
 		

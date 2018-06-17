@@ -1,5 +1,6 @@
 package greyvarEditor.ui.windows;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +12,9 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 import greyvarEditor.files.GridFile;
 import greyvarEditor.files.GridFileLoader;
@@ -28,21 +32,29 @@ public class WindowEditorWorld extends JInternalFrame  {
 		this.setBounds(100, 100, 240, 100); 
 		this.setResizable(true);
 		this.setMaximizable(true); 
-		this.setClosable(true); 
+		this.setClosable(true);
 		
-		this.setLayout(new GridBagLayout());
+		JPanel panStuff = new JPanel();
+		
+		panStuff.setLayout(new GridBagLayout());
 		  
 		GridBagConstraints gbc = new GridBagConstraints(0,0,1,1,1,1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(6,6,6,6), 0, 0); 
-		
-		this.add(new JLabel("Author: " + worldFile.author), gbc);
+		gbc.weighty = 0;
+		gbc.anchor = gbc.NORTH;
+		gbc.fill = gbc.HORIZONTAL; 
+		 
+		panStuff.add(new JLabel("Metadata"), gbc); 
+		 
+		gbc.gridy++; 
+		panStuff.add(new JLabel("Author: " + worldFile.author), gbc);
 		 
 		gbc.gridx++;
-		this.add(new JLabel("Spawn: " + worldFile.spawnGrid), gbc);
+		panStuff.add(new JLabel("Spawn: " + worldFile.spawnGrid), gbc);
 		
 		gbc.gridwidth = gbc.REMAINDER;
 		gbc.gridx = 0; 
 		gbc.gridy++;
-		this.add(new JButtonWithAl("Triggers") {
+		panStuff.add(new JButtonWithAl("Triggers") {
 			@Override
 			public void click() { 
 				new WindowTriggerList(WindowMain.getInstance(), worldFile).setVisible(true);
@@ -50,7 +62,7 @@ public class WindowEditorWorld extends JInternalFrame  {
 		}, gbc);
 		 
 		gbc.gridy++; 
-		this.add(new JLabel("---"), gbc);
+		panStuff.add(new JLabel("Grids"), gbc);
 		
 		for (final File grid : worldFile.gridFiles) {
 			if (!grid.getName().endsWith(".grid")) {
@@ -58,7 +70,9 @@ public class WindowEditorWorld extends JInternalFrame  {
 			} 
 			
 			JButton btnGrid = new JButton(grid.getName());
+			btnGrid.setHorizontalAlignment(SwingConstants.LEFT); 
 			btnGrid.addActionListener(new ActionListener() { 
+				
 				
 				@Override
 				public void actionPerformed(ActionEvent e) { 
@@ -69,9 +83,25 @@ public class WindowEditorWorld extends JInternalFrame  {
 				}
 			});
 			
-			gbc.gridy++;  
-			this.add(btnGrid, gbc); 
+			gbc.gridy++; 
+			gbc.ipadx = 60;
+			panStuff.add(btnGrid, gbc); 
 		}
+		 
+		gbc.ipadx = 0; 
+		gbc.gridy++;   
+		gbc.anchor = gbc.NORTH;  
+		gbc.fill = gbc.HORIZONTAL; 
+		gbc.weighty = 1; 
+		panStuff.add(new JLabel("end"), gbc);
+		
+		panStuff.setOpaque(true);
+		panStuff.setBackground(Color.WHITE);
+		
+		JScrollPane jsp = new JScrollPane(panStuff);
+		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		 
+		this.add(jsp);  
 		
 		this.pack();
 		this.setVisible(true);

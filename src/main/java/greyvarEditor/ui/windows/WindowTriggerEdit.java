@@ -35,19 +35,25 @@ public class WindowTriggerEdit extends JFrame {
 	}
 	
 	public void setupComponents() {
+		this.setIconImage(WindowMain.getInstance().getIconImage()); 
+		
 		this.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH, new Insets(6,6,6,6), 0, 0);
 		
 		gbc.anchor = gbc.NORTHEAST;
+		gbc.weightx = 0;
+		gbc.weighty = 0; 
 		this.add(new JLabel("Title:"), gbc); 
 		 
 		gbc.gridx++; 
+		gbc.weightx = 1; 
 		gbc.anchor = gbc.NORTHWEST; 
 		txtTitle.setText(trigger.title); 
 		this.add(txtTitle, gbc);
 		
 		gbc.gridy++;
+		gbc.weightx = 0;
 		gbc.gridx = 0;
 		gbc.anchor = gbc.NORTHEAST; 
 		gbc.fill = gbc.NONE;
@@ -55,6 +61,8 @@ public class WindowTriggerEdit extends JFrame {
 		
 		
 		gbc.gridx++; 
+		gbc.weightx = 1;
+		gbc.weighty = 1; 
 		gbc.anchor = gbc.NORTHWEST;
 		gbc.fill = gbc.BOTH; 
 		lstConditions = new ComponentCrudList<Condition>(trigger.conditions) {
@@ -80,11 +88,13 @@ public class WindowTriggerEdit extends JFrame {
 		  
 		gbc.gridy++;
 		gbc.gridx = 0;
+		gbc.weightx = 0;
 		gbc.anchor = gbc.NORTHEAST;
 		gbc.fill = gbc.NONE;
 		this.add(new JLabel("Actions:"), gbc);
 		
 		gbc.gridx++;
+		gbc.weightx = 1;
 		gbc.anchor = gbc.NORTHWEST;
 		gbc.fill = gbc.BOTH;
 		lstActions = new ComponentCrudList<Action>(trigger.actions) {
@@ -114,7 +124,7 @@ public class WindowTriggerEdit extends JFrame {
 		this.setVisible(true); 
 		this.doLayout();
 	}
-	
+	   
 	@Override
 	public void setVisible(boolean b) {
 		super.setVisible(b);

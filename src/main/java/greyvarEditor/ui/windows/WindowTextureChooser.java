@@ -182,6 +182,8 @@ public class WindowTextureChooser extends JFrame {
 	}
 
 	private void setupComponents() {
+		this.setIconImage(WindowMain.getInstance().getIconImage());
+		
 		this.refreshTextureButtons();
 
 		this.setLayout(new BorderLayout());
