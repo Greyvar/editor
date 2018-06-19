@@ -1,7 +1,7 @@
 package greyvarEditor.ui.windows;
 
-import greyvarEditor.EntityInstance;
 import greyvarEditor.Tile;
+import greyvarEditor.dataModel.EntityInstance;
 import greyvarEditor.files.GridFile;
 import greyvarEditor.ui.components.ComponentGridEditor;
 import greyvarEditor.ui.menubars.MenuBarEditorGrid;

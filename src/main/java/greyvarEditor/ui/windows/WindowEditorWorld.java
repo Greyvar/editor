@@ -21,14 +21,14 @@ import javax.swing.SwingConstants;
 import greyvarEditor.dataModel.World;
 import greyvarEditor.files.GridFile;
 import greyvarEditor.files.GridFileLoader;
-import greyvarEditor.files.WorldFile;
+import greyvarEditor.files.WorldFileHandler;
 import jwrCommonsJava.ui.JButtonWithAl;
 
 public class WindowEditorWorld extends JInternalFrame  {
 	private World world;
 
 	public WindowEditorWorld(File file) {
-		this(WorldFile.load(file));  
+		this(WorldFileHandler.load(file));  
 	} 
 	
 	public WindowEditorWorld(final World worldFile) {
@@ -123,7 +123,7 @@ public class WindowEditorWorld extends JInternalFrame  {
 	}
 	 
 	private void onSave() {
-		WorldFile.save(this.world);
+		WorldFileHandler.save(this.world);
 	}
 
 }

@@ -1,10 +1,10 @@
 package greyvarEditor.files;
 
-import greyvarEditor.EntityInstance;
 import greyvarEditor.GameResources;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
 import greyvarEditor.Tile.TeleportDirection;
+import greyvarEditor.dataModel.EntityInstance;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
 import greyvarEditor.utils.CsvFile;
 

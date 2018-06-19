@@ -16,7 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import greyvarEditor.dataModel.World;
-import greyvarEditor.files.WorldFile;
+import greyvarEditor.files.WorldFileHandler;
 import greyvarEditor.triggers.Trigger;
 import greyvarEditor.ui.components.ComponentCrudList;
 import jwrCommonsJava.ui.JButtonWithAl;

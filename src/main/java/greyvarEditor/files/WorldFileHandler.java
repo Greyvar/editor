@@ -8,8 +8,8 @@ import greyvarEditor.triggers.Trigger;
 import greyvarEditor.utils.YamlFile;
 import jwrCommonsJava.Logger; 
 
-public class WorldFile {
-	public static World load(File f) {
+public class WorldFileHandler {
+	public static World load(File f) { 
 		try {
 			World w = YamlFile.read(f, World.class);
 			w.file = f; 
@@ -30,7 +30,7 @@ public class WorldFile {
 		}
 	}
 
-	public static void save(World world) { 
-		YamlFile.write(world.file, world); 
+	public static void save(World world) {   
+		YamlFile.write(world.file, world);  
 	}
 }

@@ -2,13 +2,25 @@ package greyvarEditorTests.gridLoading;
 
 import java.io.File;
 
-import greyvarEditor.EntityDatabase;
+import org.junit.rules.ErrorCollector;
 
-public class TestEntdefs {
-	public void testEntdefs() {
+import greyvarEditor.EntityDatabase;
+import junit.framework.TestCase;
+
+import static org.junit.Assert.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+ 
+public class TestEntdefs extends TestCase {
+	public ErrorCollector collector = new ErrorCollector();
+	
+	public void testEntdefs() throws NullPointerException {
 		EntityDatabase entdb = new EntityDatabase(new File("../greyvar-server/dat/entdefs/"));
-		
+			
 		entdb.reloadEntdefs(); 
+		
+		collector.checkThat(entdb.size(), greaterThan(0));
 	}
 }
  

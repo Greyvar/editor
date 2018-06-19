@@ -18,9 +18,9 @@ import com.fasterxml.jackson.dataformat.yaml.UTF8Reader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 
-import greyvarEditor.EntityInstance;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
+import greyvarEditor.dataModel.EntityInstance;
 import jwrCommonsJava.Logger;
 
 public class GridFileYaml implements GridFile {
@@ -330,8 +330,8 @@ public class GridFileYaml implements GridFile {
 					gen.writeStartObject();
 					gen.writeNumberField("x", x);
 					gen.writeNumberField("y", y);   
-					gen.writeNumberField("id", e.id); 
-					gen.writeStringField("texture", this.entities[x][y].editorTexture.getFilename());
+					gen.writeNumberField("id", e.id);  
+					gen.writeStringField("definition", this.entities[x][y].definition);
 					
 					gen.writeEndObject();
 				}

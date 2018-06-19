@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 
 import greyvarEditor.files.GridFile;
 import greyvarEditor.files.GridFileLoader;
-import greyvarEditor.files.WorldFile;
+import greyvarEditor.files.WorldFileHandler;
 import greyvarEditor.ui.windows.WindowEditorGrid;
 import greyvarEditor.ui.windows.WindowEditorWorld;
 import greyvarEditor.ui.windows.WindowMain;

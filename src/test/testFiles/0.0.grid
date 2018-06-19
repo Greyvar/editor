@@ -1797,19 +1797,19 @@ tiles:
 entities:
 - x: 3
   y: 10
-  texture: "chest.png"
+  definition: "chest"
 - x: 4
   y: 4
-  texture: "sign.png"
+  definition: "sign"
 - x: 7
   y: 4
-  texture: "cake.png"
+  definition: "cake"
 - x: 8
   y: 1
-  texture: "chest.png"
+  definition: "chest"
 - x: 9
   y: 7
-  texture: "tv.png"
+  definition: "tv"
 - x: 13
   y: 4
-  texture: "chest.png"
+  definition: "chest"

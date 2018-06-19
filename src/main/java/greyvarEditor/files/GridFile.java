@@ -2,8 +2,8 @@ package greyvarEditor.files;
 
 import java.io.File;
 
-import greyvarEditor.EntityInstance;
 import greyvarEditor.Tile;
+import greyvarEditor.dataModel.EntityInstance;
 
 public interface GridFile { 
 	public Tile[][] getTileList();

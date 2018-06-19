@@ -25,9 +25,11 @@ public class EntityDatabase {
 	public void reloadEntdefs() {
 		this.entdefs.clear();
 		
-		for (File f: this.baseDir.listFiles((File dir, String filename) -> { return filename.endsWith(".yml"); })) {
-			this.loadEntdef(f);
-		}
+		if (this.baseDir.exists()) {
+			for (File f: this.baseDir.listFiles((File dir, String filename) -> { return filename.endsWith(".yml"); })) {
+				this.loadEntdef(f);
+			}
+		} 
 	}
 	
 	public void loadEntdef(File f) {
@@ -45,7 +47,17 @@ public class EntityDatabase {
 	}
  
 	public Texture getEntityTexture(String definition) {
-		return TextureCache.instanceEntities.getDefault();
+		EntityDefinition entdef = this.entdefs.get(definition);
+		
+		if (entdef == null) {
+			return TextureCache.instanceEntities.getDefault();	
+		} else {
+			return TextureCache.instanceEntities.getTex(entdef.getFirstState().tex); 
+		} 
+	}
+
+	public int size() {
+		return entdefs.size(); 
 	}
 
 }
