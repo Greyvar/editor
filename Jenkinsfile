@@ -1,4 +1,4 @@
-node("fedora") {
+node() {
 	stage("Build") {
 		deleteDir()
 
