@@ -1,6 +1,6 @@
 package greyvarEditor.ui.windows.editors.grid.panels;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.Tile;
 import greyvarEditor.ui.components.ComponentTextureViewer;
 import greyvarEditor.utils.EditLayerMode;
@@ -16,7 +16,7 @@ public class PanFocus extends JPanel {
 		this.setBorder(BorderFactory.createTitledBorder("Focus (red box)"));
 	}
 
-	public void setFocus(int x, int y, Tile t, Entity e) {
+	public void setFocus(int x, int y, Tile t, EntityInstance e) {
 		this.removeAll(); 
 		this.setLayout(new GridLayout(1, 0));
 		this.add(new JLabel("Cell: " + x + ":" + y));

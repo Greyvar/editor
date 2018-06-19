@@ -1,6 +1,6 @@
 package greyvarEditor.ui.windows.editors.grid.panels;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
 import greyvarEditor.ui.components.ComponentTextureViewer;

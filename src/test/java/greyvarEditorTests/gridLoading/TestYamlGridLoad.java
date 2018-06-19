@@ -2,7 +2,7 @@ package greyvarEditorTests.gridLoading;
 
 import java.io.File;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.Tile;
 import greyvarEditor.files.GridFileYaml;
 import junit.framework.TestCase;
@@ -24,9 +24,9 @@ public class TestYamlGridLoad extends TestCase {
 		
 		assertNotNull(tileList);  
 		
-		Entity[][] entityList = gridFile.getEntityList();
+		EntityInstance[][] entityList = gridFile.getEntityList();
 		  
 		assertEquals("hill.png", tileList[0][0].getTextureFilenameOnly());
-		assertEquals("chest.png", entityList[13][4].tex.getFilename()); 
+		assertEquals("chest.png", entityList[13][4].editorTexture.getFilename()); 
 	}
-}
+} 

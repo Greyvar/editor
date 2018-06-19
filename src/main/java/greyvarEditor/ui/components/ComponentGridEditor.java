@@ -1,6 +1,6 @@
 package greyvarEditor.ui.components;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
 import greyvarEditor.files.GridFile;
@@ -30,7 +30,7 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 	private int curry;
 
 	private Tile[][] tileList;
-	private Entity[][] entityList;  
+	private EntityInstance[][] entityList;  
 
 	private GridFile gf;
 	private Tile lastHoveredTile;
@@ -193,11 +193,11 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		} 
 	}
 	
-	public void paintEntity(Graphics g, int x, int y, Entity e, int w, int h) {
-		if (e == null || e.tex == null) {
+	public void paintEntity(Graphics g, int x, int y, EntityInstance e, int w, int h) {
+		if (e == null || e.editorTexture == null) {
 			return;
 		} else {
-			g.drawImage(e.tex.image, x * w, y * h, w, h, null); 
+			g.drawImage(e.editorTexture.image, x * w, y * h, w, h, null); 
 		}
 	} 
 

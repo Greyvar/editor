@@ -12,15 +12,19 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import greyvarEditor.triggers.Fragment;
+import greyvarEditor.ui.windows.WindowTriggerFragmentEditor;
+
 public class ClickableFragmentLabel extends JLabel implements MouseListener {
 	private final JComponent comp;
 	
-	public interface Listener {
-		public void onFragmentClicked(JComponent comp); 
+	public interface Listener { 
+		public void onFragmentClicked(JComponent comp, String argKey); 
 	}
 	
 	private Listener listener;
-	
+	private String argKey = "";
+	 
 	public ClickableFragmentLabel(Listener listener, String txt, JComponent comp) {  
 		super(txt); 
 		
@@ -31,8 +35,14 @@ public class ClickableFragmentLabel extends JLabel implements MouseListener {
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));  
 	}
 	
-	public void onClicked() {
-		this.listener.onFragmentClicked(comp); 
+	public ClickableFragmentLabel(Listener listener, String txt, JComponent comp, String argKey) {
+		this(listener, txt, comp);
+		
+		this.argKey = argKey;
+	}
+
+	public void onClicked() {  
+		this.listener.onFragmentClicked(comp, argKey); 
 	}
 
 	@Override

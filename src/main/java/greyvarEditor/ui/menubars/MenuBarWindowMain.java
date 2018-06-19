@@ -1,6 +1,7 @@
 package greyvarEditor.ui.menubars;
 
 import greyvarEditor.GameResources;
+import greyvarEditor.dataModel.World;
 import greyvarEditor.files.GridFile;
 import greyvarEditor.files.GridFileLoader;
 import greyvarEditor.files.WorldFile;
@@ -143,10 +144,10 @@ public class MenuBarWindowMain extends JMenuBar implements ActionListener {
 
 		if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			this.loadWorld(WorldFile.load((jfc.getSelectedFile())));
-		}  
-	} 
+		}   
+	}  
 
-	void loadWorld(WorldFile wf) { 
+	void loadWorld(World wf) { 
 		WindowMain.getInstance().addFrame(new WindowEditorWorld(wf));
 	}
  

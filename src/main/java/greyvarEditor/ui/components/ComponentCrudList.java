@@ -153,5 +153,9 @@ public abstract class ComponentCrudList<T> extends JPanel implements ListSelecti
 		updateButtons();
 		onSelectionChanged();
 	}
+
+	public void refresh() {
+		lst.updateUI(); 		
+	}
 	
 }

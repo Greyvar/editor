@@ -1,6 +1,6 @@
 package greyvarEditor.files;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.GameResources;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
@@ -127,7 +127,7 @@ class GridFileCsv extends CsvFile implements GridFile {
 	}
 
 	@Override
-	public Entity[][] getEntityList() {
+	public EntityInstance[][] getEntityList() {
 		return null;
 	}
 

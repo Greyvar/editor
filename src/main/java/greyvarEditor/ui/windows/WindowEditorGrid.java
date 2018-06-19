@@ -1,6 +1,6 @@
 package greyvarEditor.ui.windows;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.Tile;
 import greyvarEditor.files.GridFile;
 import greyvarEditor.ui.components.ComponentGridEditor;
@@ -116,13 +116,13 @@ public class WindowEditorGrid extends PopableWindow {
 		return new ImageIcon(this.gridEditor.getScreenshot());
 	}
 
-	public void onCellFocus(int x, int y, Tile t, Entity e) {
+	public void onCellFocus(int x, int y, Tile t, EntityInstance e) {
 		this.panFocus.setFocus(x, y, t, e);
 		this.panPhysics.updateInterface(t);
 		this.panTransport.updateSelectedTile(x, y, t);
 	} 
 
-	public void onCellSelected(int currx, int curry, Tile tile, Entity entity) {
+	public void onCellSelected(int currx, int curry, Tile tile, EntityInstance entity) {
 		this.panAppearance.setCurrentTexture(tile.tex);
 		this.panEntity.setCurrentEntity(entity); 
 		this.panFocus.setFocus(currx, curry, tile, entity);

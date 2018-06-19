@@ -6,6 +6,7 @@ import greyvarEditor.triggers.conditionFragments.ConditionPlayerLeave;
 import greyvarEditor.triggers.conditionFragments.ConditionPlayerSpawn;
 import greyvarEditor.triggers.conditionFragments.ConditionStepOn;
 import greyvarEditor.triggers.conditionFragments.ConditionWalkInto;
+import greyvarEditor.triggers.eventFragments.ActionDisable;
 import greyvarEditor.triggers.eventFragments.ActionEntityMove;
 import greyvarEditor.triggers.eventFragments.ActionMessage;
 
@@ -21,10 +22,11 @@ public class LibraryOfFragments {
 		this.conditions.add(ConditionStepOn.class); 
 		this.conditions.add(ConditionWalkInto.class);
 		
-		this.actions.add(ActionEntityMove.class);
+		this.actions.add(ActionEntityMove.class); 
 		this.actions.add(ActionMessage.class); 
+		this.actions.add(ActionDisable.class); 
 	}
-	
+	 
 	private Class<? extends Action> getActionByName(String name) {
 		for (Class<? extends Action> c : this.actions) {
 			if (c.getSimpleName().equals(name)) {
@@ -68,13 +70,13 @@ public class LibraryOfFragments {
 		
 		return null;
 	}
-	
+	 
 	public Vector<String> getConditions() {
-		Vector<String> names = new Vector<>();
+		Vector<String> names = new Vector<>(); 
 		
 		for (Class<? extends Condition> f : this.conditions) {
 			names.add(f.getSimpleName());
-		}
+		} 
 		
 		return names;
 	} 

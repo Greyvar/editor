@@ -12,12 +12,13 @@ public class TestRenderStatement {
 		testRenderStatement();
 	}
 	
-	public static void testRenderStatement() {
-		Trigger triggerOpenDoor = new Trigger(); 
-		triggerOpenDoor.conditions.add(new ConditionStepOn(3, 9));
-		triggerOpenDoor.actions.add(new ActionEntityMove(1, 7, 12)); 
-		triggerOpenDoor.actions.add(new ActionMessage("Door opened!"));
+	public static void testRenderStatement() {  
+		Trigger triggerOpenDoor = new Trigger();
 		
-		new WindowTriggerFragmentEditor(new ConditionStepOn(3, 4)); 
+		triggerOpenDoor.conditions.add(new ConditionStepOn().pos(3, 9)); 
+		triggerOpenDoor.actions.add(new ActionEntityMove().set(1, 7,  12));   
+		triggerOpenDoor.actions.add(new ActionMessage().set("Door Opened!")); 
+		
+		new WindowTriggerFragmentEditor(new ConditionStepOn().pos(3,4));  
 	}
 }

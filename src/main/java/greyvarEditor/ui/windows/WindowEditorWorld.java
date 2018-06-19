@@ -12,22 +12,30 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import greyvarEditor.dataModel.World;
 import greyvarEditor.files.GridFile;
 import greyvarEditor.files.GridFileLoader;
 import greyvarEditor.files.WorldFile;
 import jwrCommonsJava.ui.JButtonWithAl;
 
 public class WindowEditorWorld extends JInternalFrame  {
+	private World world;
 
 	public WindowEditorWorld(File file) {
 		this(WorldFile.load(file));  
 	} 
 	
-	public WindowEditorWorld(final WorldFile worldFile) {
+	public WindowEditorWorld(final World worldFile) {
+		this.world = world; 
+		
+		this.setupMenu();
+		
 		this.setTitle("World Editor:" + worldFile.title); 
 		this.setBounds(100, 100, 240, 100); 
 		this.setResizable(true);
@@ -53,11 +61,11 @@ public class WindowEditorWorld extends JInternalFrame  {
 		
 		gbc.gridwidth = gbc.REMAINDER;
 		gbc.gridx = 0; 
-		gbc.gridy++;
+		gbc.gridy++;  
 		panStuff.add(new JButtonWithAl("Triggers") {
 			@Override
 			public void click() { 
-				new WindowTriggerList(WindowMain.getInstance(), worldFile).setVisible(true);
+				new WindowTriggerList(WindowMain.getInstance(), world).setVisible(true);
 			}
 		}, gbc);
 		 
@@ -72,14 +80,11 @@ public class WindowEditorWorld extends JInternalFrame  {
 			JButton btnGrid = new JButton(grid.getName());
 			btnGrid.setHorizontalAlignment(SwingConstants.LEFT); 
 			btnGrid.addActionListener(new ActionListener() { 
-				
-				
 				@Override
 				public void actionPerformed(ActionEvent e) { 
-					GridFile gf = GridFileLoader.load(grid); 	 	 		
+					GridFile gf = GridFileLoader.load(grid); 	 	 		 
 					
 					WindowMain.getInstance().addFrame(new WindowEditorGrid(gf));
-					
 				}
 			});
 			
@@ -105,6 +110,20 @@ public class WindowEditorWorld extends JInternalFrame  {
 		
 		this.pack();
 		this.setVisible(true);
+	}
+	
+	private void setupMenu() {
+		JMenuItem mniSave = new JMenuItem("Save");
+		mniSave.addActionListener((e) -> {
+			onSave();
+		}); 
+		
+		JMenu mnu = new JMenu();  
+		mnu.add(mniSave);
+	}
+	 
+	private void onSave() {
+		WorldFile.save(this.world);
 	}
 
 }

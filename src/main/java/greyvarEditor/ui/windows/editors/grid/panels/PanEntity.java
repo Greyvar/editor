@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.TextureCache;
 import greyvarEditor.ui.components.ComponentTextureViewer;
 import greyvarEditor.utils.EditLayerMode;
@@ -29,9 +29,9 @@ public class PanEntity extends JPanel {
 		this.doLayout();	
 	}
 	
-	public void setCurrentEntity(Entity entity) {
+	public void setCurrentEntity(EntityInstance entity) {
 		if (entity != null) {
-			this.viewer.setTex(entity.tex);
+			this.viewer.setTex(entity.editorTexture);
 		} else {
 			this.viewer.setTex(TextureCache.instanceEntities.getDefault()); 
 		}
@@ -42,7 +42,8 @@ public class PanEntity extends JPanel {
 		return this.viewer.getTexture();
 	}
 
-	public Entity getNewSelected(int id) { 
-		return new Entity(this.viewer.getTexture(), id);  
+	public EntityInstance getNewSelected(int id) {  
+		//return new EntityInstance(this.viewer.getTexture(), id);
+		return null; 
 	}
 }

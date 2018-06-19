@@ -2,12 +2,15 @@ package greyvarEditor;
 
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
 
-public class Entity {
-	public int id; 
-	public Texture tex;
+public class EntityInstance {
+	public int id;  
+	public String definition; 
+	public Texture editorTexture;
  
-	public Entity(Texture texTile, int id) {
-		this.tex = texTile; 
+	public EntityInstance(String definition, int id) {
+		this.definition = definition; 
 		this.id = id; 
+		
+		this.editorTexture = GameResources.entityDatabase.getEntityTexture(definition); 
 	}
 }

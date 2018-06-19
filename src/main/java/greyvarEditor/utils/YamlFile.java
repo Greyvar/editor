@@ -21,4 +21,10 @@ public abstract class YamlFile {
 			return null; 
 		}
 	}  
+	 
+	public static void write(File f, Class<T> o) {
+		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		
+		mapper.writeValue(f, o);  
+	}
 }

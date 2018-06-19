@@ -18,14 +18,14 @@ import com.fasterxml.jackson.dataformat.yaml.UTF8Reader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 
-import greyvarEditor.Entity;
+import greyvarEditor.EntityInstance;
 import greyvarEditor.TextureCache;
 import greyvarEditor.Tile;
 import jwrCommonsJava.Logger;
 
 public class GridFileYaml implements GridFile {
 	private Tile[][] tiles;
-	private Entity[][] entities; 
+	private EntityInstance[][] entities; 
 	private int gridWidth;
 	private int gridHeight;
 	private int lastEntityId;  
@@ -52,7 +52,7 @@ public class GridFileYaml implements GridFile {
 		this.lastEntityId = 0; 
 		
 		this.tiles = new Tile[gridWidth][gridHeight];
-		this.entities = new Entity[gridWidth][gridHeight]; 
+		this.entities = new EntityInstance[gridWidth][gridHeight]; 
 
 		for (int x = 0; x < gridWidth; x++) { 
 			for (int y = 0; y < gridHeight; y++) { 
@@ -136,7 +136,7 @@ public class GridFileYaml implements GridFile {
 		int x = -1;
 		int y = -1;
 		int id = -1; 
-		String filename = "";
+		String definition = "";
 		
 		try {
 			while (p.hasCurrentToken()) {
@@ -153,7 +153,7 @@ public class GridFileYaml implements GridFile {
 					x = -1;
 					y = -1;
 					id = -1;
-					filename = "";
+					definition = "";
 					
 					break;
 				case END_ARRAY: 
@@ -163,7 +163,7 @@ public class GridFileYaml implements GridFile {
 						continue;
 					} 
 					
-					Entity e = new Entity(TextureCache.instanceEntities.getTex(filename), id);    
+					EntityInstance e = new EntityInstance(definition, id);    
 					
 					this.entities[x][y] = e;
 					break;
@@ -178,9 +178,9 @@ public class GridFileYaml implements GridFile {
 					case "id": 
 						id = p.nextIntValue(-1);
 						break;
-					case "texture":
-						filename = p.nextTextValue();
-						break;
+					case "definition": 
+						definition = p.nextTextValue();
+						break; 
 					}
 				}
 			}
@@ -321,9 +321,9 @@ public class GridFileYaml implements GridFile {
 			gen.writeStartArray();
 			for (int x = 0; x < gridWidth; x++) {
 				for (int y = 0; y < gridHeight; y++) {
-					Entity e = this.entities[x][y];
+					EntityInstance e = this.entities[x][y];
  
-					if (e == null || e.tex == null) {
+					if (e == null || e.editorTexture == null) {
 						continue;
 					}
 					
@@ -331,7 +331,7 @@ public class GridFileYaml implements GridFile {
 					gen.writeNumberField("x", x);
 					gen.writeNumberField("y", y);   
 					gen.writeNumberField("id", e.id); 
-					gen.writeStringField("texture", this.entities[x][y].tex.getFilename());
+					gen.writeStringField("texture", this.entities[x][y].editorTexture.getFilename());
 					
 					gen.writeEndObject();
 				}
@@ -349,7 +349,7 @@ public class GridFileYaml implements GridFile {
 	}
 
 	@Override 
-	public Entity[][] getEntityList() {
+	public EntityInstance[][] getEntityList() {
 		return this.entities; 
 	}
 

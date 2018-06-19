@@ -15,6 +15,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import greyvarEditor.dataModel.World;
 import greyvarEditor.files.WorldFile;
 import greyvarEditor.triggers.Trigger;
 import greyvarEditor.ui.components.ComponentCrudList;
@@ -23,12 +24,12 @@ import jwrCommonsJava.ui.JButtonWithAl;
 public class WindowTriggerList extends JFrame { 
 	private ComponentCrudList<Trigger> triggerList;  
 	
-	private final WorldFile worldFile; 
+	private final World world; 
 	
-	public WindowTriggerList(JFrame parent, WorldFile worldFile) {
-		this.worldFile = worldFile;
+	public WindowTriggerList(JFrame parent, World world) {
+		this.world = world;
 		 
-		this.triggerList = new ComponentCrudList<Trigger>(worldFile.triggers) {
+		this.triggerList = new ComponentCrudList<Trigger>(world.triggers) {
 			
 			@Override
 			public void onEdit(Trigger t) {
@@ -37,21 +38,21 @@ public class WindowTriggerList extends JFrame {
 			
 			@Override
 			public void onDelete(Trigger t) {
-				WindowTriggerList.this.worldFile.triggers.remove(t);
+				WindowTriggerList.this.world.triggers.remove(t);
 			} 
 			
 			@Override
 			public void onCreate() {
 				Trigger t = new Trigger();  
-				WindowTriggerList.this.worldFile.triggers.add(t); 
+				WindowTriggerList.this.world.triggers.add(t); 
 				  
 				new WindowTriggerEdit(WindowTriggerList.this, t).setVisible(true);
 			} 
 		};
 		
-		this.setupComponents();
+		this.setupComponents();  
 		
-		this.setTitle("Triggers for world: " + worldFile.title);
+		this.setTitle("Triggers for world: " + world.title);
 		this.setBounds(100, 100, 640, 480);
 		this.setLocationRelativeTo(null); 
 		this.setVisible(true); 

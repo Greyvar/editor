@@ -57,10 +57,9 @@ public class WindowTriggerEdit extends JFrame {
 		gbc.gridx = 0;
 		gbc.anchor = gbc.NORTHEAST; 
 		gbc.fill = gbc.NONE;
-		this.add(new JLabel("Conditions:"), gbc);
+		this.add(new JLabel("Conditions:"), gbc); 
 		
-		
-		gbc.gridx++; 
+		gbc.gridx++;    
 		gbc.weightx = 1;
 		gbc.weighty = 1; 
 		gbc.anchor = gbc.NORTHWEST;
@@ -69,19 +68,25 @@ public class WindowTriggerEdit extends JFrame {
 			@Override
 			public void onCreate() {
 				Condition c = new Condition();
+				 
+				c = new WindowTriggerFragmentEditor<Condition>(c).getEditedFragment();
+ 				 
 				trigger.conditions.add(c);
-				
-				new WindowTriggerFragmentEditor(c);
-			}
+				lstConditions.refresh();
+			} 
 
-			@Override
+			@Override 
 			public void onDelete(Condition c) {
 				trigger.conditions.remove(c);
+				
+				lstConditions.refresh(); 
 			}
 
 			@Override
 			public void onEdit(Condition c) {
 				new WindowTriggerFragmentEditor(c);
+				
+				lstConditions.refresh(); 
 			}
 		};
 		this.add(lstConditions, gbc);
@@ -101,20 +106,26 @@ public class WindowTriggerEdit extends JFrame {
 
 			@Override
 			public void onCreate() {
-				Action a = new Action();
-				trigger.actions.add(a);
+				Action a = new Action(); 
+				 
+				a = new WindowTriggerFragmentEditor<Action>(a).getEditedFragment();
 				
-				new WindowTriggerFragmentEditor(a);
+				trigger.actions.add(a);
+				lstActions.refresh();
 			}
 
 			@Override
 			public void onDelete(Action a) {
 				trigger.actions.remove(a);
-			}
+				
+				lstActions.refresh();
+			} 
 
 			@Override
 			public void onEdit(Action a) {
 				new WindowTriggerFragmentEditor(a);
+				
+				lstActions.refresh();
 			}
 		};  
 		this.add(lstActions, gbc);
