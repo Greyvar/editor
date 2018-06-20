@@ -14,5 +14,4 @@ public class World {
 	public transient File file;
 	
 	public Vector<Trigger> triggers = new Vector<>();
-	public Vector<EntityInstance> entities = new Vector<>(); 
 }

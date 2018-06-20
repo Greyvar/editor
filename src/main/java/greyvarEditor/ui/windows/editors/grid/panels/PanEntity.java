@@ -15,11 +15,12 @@ import greyvarEditor.GameResources;
 import greyvarEditor.TextureCache;
 import greyvarEditor.dataModel.EntityDefinition;
 import greyvarEditor.dataModel.EntityInstance;
+import greyvarEditor.ui.components.AllEnabledOrDisabledPanel;
 import greyvarEditor.ui.components.ComponentTextureViewer;
 import greyvarEditor.utils.EditLayerMode;
 import jwrCommonsJava.ui.JButtonWithAl;
-
-public class PanEntity extends JPanel implements ActionListener {
+ 
+public class PanEntity extends AllEnabledOrDisabledPanel implements ActionListener {
 	public PanEntity() {
 		this.setBorder(BorderFactory.createTitledBorder("Entity")); 
 		this.setupComponents();
@@ -29,6 +30,8 @@ public class PanEntity extends JPanel implements ActionListener {
 	private ComponentTextureViewer viewer = new ComponentTextureViewer();
 	
 	private void setupComponents() {
+		cboEntities.addItem("-- select entity --"); 
+		
 		for (EntityDefinition ed : GameResources.entityDatabase.entdefs.values()) {
 			cboEntities.addItem(ed.title);
 		}  
@@ -46,18 +49,27 @@ public class PanEntity extends JPanel implements ActionListener {
 		if (entity != null) {
 			cboEntities.getModel().setSelectedItem(entity.definition);
 		} else {
-			//this.viewer.setTex(TextureCache.instanceEntities.getDefault()); 
-		}
+			this.viewer.unsetTex();  
+			this.cboEntities.setSelectedIndex(0);  
+		} 
 	}
 
 	public EntityInstance getNewSelected(int id) {   
-		return new EntityInstance(cboEntities.getSelectedItem().toString(), id);
+		if (cboEntities.getSelectedIndex() == 0) {
+			return null;
+		} else { 
+			return new EntityInstance(cboEntities.getSelectedItem().toString(), id);
+		}
 	}
  
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Texture tex = GameResources.entityDatabase.getEntityTexture(cboEntities.getSelectedItem().toString());
-		 
-		this.viewer.setTex(tex);
+		if (cboEntities.getSelectedIndex() == 0) {
+			this.viewer.unsetTex();
+		} else {
+			Texture tex = GameResources.entityDatabase.getEntityTexture(cboEntities.getSelectedItem().toString());
+			 
+			this.viewer.setTex(tex);	
+		}
 	}
 }

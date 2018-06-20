@@ -2,10 +2,10 @@ package greyvarEditor.triggers.eventFragments;
 
 import greyvarEditor.triggers.Action;
 import greyvarEditor.triggers.Fragment;
-import greyvarEditor.triggers.arguments.ArgumentMessage;
+import greyvarEditor.triggers.arguments.ArgumentString;
  
 public class ActionMessage extends Action {
-	private ArgumentMessage argMsg = new ArgumentMessage();
+	private ArgumentString argMsg = new ArgumentString();
 
 	public ActionMessage() {
 		this.arguments.put("message", argMsg); 
@@ -17,7 +17,7 @@ public class ActionMessage extends Action {
 	} 
 	
 	public ActionMessage set(String message) {
-		this.argMsg.message = message;
+		this.argMsg.value = message;
 		 
 		return this; 
 	}

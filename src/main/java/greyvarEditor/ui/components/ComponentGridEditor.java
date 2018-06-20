@@ -47,6 +47,21 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		this.addMouseMotionListener(this);
 		this.setPreferredSize(new Dimension(50, 50));
 	}
+	
+	@Override
+	public Dimension getPreferredSize() {    
+		return new Dimension(gf.getGridWidth() * 64, gf.getGridHeight() * 64);
+	}
+	
+	@Override
+	public Dimension getMaximumSize() {
+		return getPreferredSize(); 
+	}
+	
+	@Override
+	public Dimension getMinimumSize() {
+		return getPreferredSize(); 
+	}	
 
 	public void blanketTextureEverything(Texture t) {
 		for (int i = 0; i < this.gf.getGridWidth(); i++) {
@@ -159,7 +174,9 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 	private void onCellApplyPaint(int x, int y) {
 		switch (this.currentEditMode) {
 		case ENTITIES:  
-			this.entityList[x][y] = windowEditorGrid.panEntity.getNewSelected(this.getGridFile().nextEntityId());
+			EntityInstance enti = windowEditorGrid.panEntity.getNewSelected(this.getGridFile().nextEntityId());
+			 
+			this.entityList[x][y] = enti;
 			break;
 		case TILES: 
 			this.tileList[x][y].tex = windowEditorGrid.panAppearance.getCurrentTexture();

@@ -58,6 +58,9 @@ public class ArgumentTileCoordinates extends FragmentArgument {
 	
 	private TileCoordEditor editor = new TileCoordEditor();
 	
+	public ArgumentTileCoordinates() {
+	}
+	
 	public ArgumentTileCoordinates(int x, int y) {
 		this.x = x;
 		this.y = y; 

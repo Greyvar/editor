@@ -89,17 +89,21 @@ public class WindowEditorGrid extends PopableWindow {
 		this.gridEditor.setEditMode(mode); 
 		
 		switch (mode) { 
-		case TILES:
-			this.panFocus.setEnabled(true);
+		case TILES: 
+			this.panAppearance.setEnabled(true);
+			this.panEntity.setEnabled(false);
 			this.panPhysics.setEnabled(true);
 			this.panTransport.setEnabled(true);
 			break;
 		case ENTITIES: 
-			this.panFocus.setEnabled(false); 
+			this.panAppearance.setEnabled(false);
+			this.panEntity.setEnabled(true);
 			this.panPhysics.setEnabled(false); 
 			this.panTransport.setEnabled(false);
+			break; 
 		case FLUIDS:
-			this.panFocus.setEnabled(false);
+			this.panAppearance.setEnabled(false); 
+			this.panEntity.setEnabled(false); 
 			this.panPhysics.setEnabled(false); 
 			this.panTransport.setEnabled(false);
 			break; 

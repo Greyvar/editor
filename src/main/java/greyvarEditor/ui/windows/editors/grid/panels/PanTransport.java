@@ -3,6 +3,7 @@ package greyvarEditor.ui.windows.editors.grid.panels;
 import greyvarEditor.Tile;
 import greyvarEditor.Tile.TeleportDirection;
 import greyvarEditor.files.GridFileLoader;
+import greyvarEditor.ui.components.AllEnabledOrDisabledPanel;
 import greyvarEditor.ui.windows.WindowEditorGrid;
 import greyvarEditor.ui.windows.WindowMain;
 
@@ -26,8 +27,8 @@ import javax.swing.SpinnerNumberModel;
 
 import jwrCommonsJava.Logger;
 import jwrCommonsJava.ui.JButtonWithAl;
-
-public class PanTransport extends JPanel {
+ 
+public class PanTransport extends AllEnabledOrDisabledPanel {
 	private class ButtonTransportDirection extends JButtonWithAl {
 		private int x = 0, y = 0;
 		private TeleportDirection direction = TeleportDirection.NORTH;

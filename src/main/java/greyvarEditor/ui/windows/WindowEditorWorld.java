@@ -32,8 +32,8 @@ public class WindowEditorWorld extends JInternalFrame  {
 	} 
 	
 	public WindowEditorWorld(final World worldFile) {
-		this.world = world; 
-		
+		this.world = worldFile;  
+		 
 		this.setupMenu();
 		
 		this.setTitle("World Editor:" + worldFile.title); 

@@ -2,6 +2,7 @@ package greyvarEditor.ui.windows.editors.grid.panels;
 
 import greyvarEditor.Tile;
 import greyvarEditor.dataModel.EntityInstance;
+import greyvarEditor.ui.components.AllEnabledOrDisabledPanel;
 import greyvarEditor.ui.components.ComponentTextureViewer;
 import greyvarEditor.utils.EditLayerMode;
 
@@ -11,7 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PanFocus extends JPanel {
+public class PanFocus extends AllEnabledOrDisabledPanel {
 	public PanFocus() {
 		this.setBorder(BorderFactory.createTitledBorder("Focus (red box)"));
 	}

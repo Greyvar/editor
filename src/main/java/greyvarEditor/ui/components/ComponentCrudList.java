@@ -21,14 +21,14 @@ import greyvarEditor.triggers.Trigger;
 import jwrCommonsJava.Util;
 import jwrCommonsJava.ui.JButtonWithAl;
 
-public abstract class ComponentCrudList<T> extends JPanel implements ListSelectionListener {
+public abstract class ComponentCrudList<T> extends AllEnabledOrDisabledPanel implements ListSelectionListener {
 	private JList<T> lst;
 	 
 	private JButton btnCreate;
 	private JButton btnEdit;
 	private JButton btnDelete; 
 	
-	private final Vector<T> contents;
+	private final Vector<T> contents; 
 	
 	class Model implements ListModel<T> {
 

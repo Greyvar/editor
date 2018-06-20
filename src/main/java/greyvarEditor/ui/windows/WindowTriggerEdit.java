@@ -28,10 +28,12 @@ public class WindowTriggerEdit extends JFrame {
 		
 		setupComponents();
 		
-		this.pack(); 
-		this.setLocationRelativeTo(null); 
-		this.requestFocus(); 
+		this.setLocationRelativeTo(null);
+		this.setLocation(this.getLocation().x, this.getLocation().y + 80); 
+		this.requestFocus();  
 		this.setVisible(true);
+		
+		this.txtTitle.requestFocus(); 
 	}
 	
 	public void setupComponents() {
@@ -132,8 +134,8 @@ public class WindowTriggerEdit extends JFrame {
 		
 		this.setTitle("Edit Trigger");
 		this.setBounds(100, 100, 640, 480);
-		this.setVisible(true); 
-		this.doLayout();
+		this.setLocationRelativeTo(null); 
+		this.setVisible(true);  
 	}
 	   
 	@Override

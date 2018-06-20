@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import jwrCommonsJava.ui.JButtonWithAl;
-
-public class ComponentTextureViewer extends JPanel implements WindowTextureChooser.Listener {
+ 
+public class ComponentTextureViewer extends AllEnabledOrDisabledPanel implements WindowTextureChooser.Listener {
 	private Texture tex = null;
 	private final JLabel lblTex = new JLabel(); 
 
@@ -41,10 +41,11 @@ public class ComponentTextureViewer extends JPanel implements WindowTextureChoos
 	public ComponentTextureViewer(boolean chooserButton, Texture t, EditLayerMode mode) {
 		this.mode = mode;
 		
-		this.lblTex.setText("No texture");
 		this.lblTex.setPreferredSize(new Dimension(200, 200));
 		this.lblTex.setBackground(Color.GRAY);
 		this.lblTex.setBorder(BorderFactory.createLoweredBevelBorder());
+		 
+		this.unsetTex();
 
 		this.setLayout(new BorderLayout());
 		this.add(this.lblTex, BorderLayout.CENTER);
@@ -72,12 +73,21 @@ public class ComponentTextureViewer extends JPanel implements WindowTextureChoos
 
 	public void setTex(Texture tex) {
 		if (tex == null) {
-			return;
+			this.unsetTex();
+			return; 
 		}
 		
 		this.tex = tex;
 		this.lblTex.setIcon(new ImageIcon(tex.image));
 		this.lblTex.setText(tex.getId());
 		this.lblTex.repaint();
+	}
+
+	public void unsetTex() {
+		this.tex = null;
+		this.lblTex.setIcon(null);
+		this.lblTex.setText("No texture");
+		this.lblTex.revalidate();  
+		this.lblTex.repaint(); 
 	};
 }

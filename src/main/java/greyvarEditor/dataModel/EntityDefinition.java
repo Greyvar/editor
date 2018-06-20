@@ -10,7 +10,7 @@ public class EntityDefinition {
 	@Transient 
 	public EntityState getFirstState() {
 		if (states.size() == 0) {
-			return null;	
+			throw new RuntimeException("Entity definition that has zero states!: " + this.title); 	
 		} else { 
 			return states.values().iterator().next();
 		}

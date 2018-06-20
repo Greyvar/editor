@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
 public abstract class YamlFile { 
 	public static <T> T read(File f, Class<T> class1) {
@@ -24,12 +25,15 @@ public abstract class YamlFile {
 	}  
 	  
 	public static void write(File f, Object o) {
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		YAMLFactory factory = new YAMLFactory();
+		factory.disable(YAMLGenerator.Feature.USE_NATIVE_TYPE_ID);
+		 
+		ObjectMapper mapper = new ObjectMapper(factory);
 		
 		try {
 			mapper.writeValue(f, o); 
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}  
 	}
 }

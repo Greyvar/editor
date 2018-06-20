@@ -1,6 +1,7 @@
 package greyvarEditor.ui.windows.editors.grid.panels;
 
 import greyvarEditor.Tile;
+import greyvarEditor.ui.components.AllEnabledOrDisabledPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -8,7 +9,7 @@ import javax.swing.JPanel;
 
 import jwrCommonsJava.ui.JCheckboxWithAl;
 
-public class PanPhysics extends JPanel {
+public class PanPhysics extends AllEnabledOrDisabledPanel {
 	private final JCheckBox chkTraversable = new JCheckboxWithAl("Traversable") {
 		@Override
 		protected void onClicked() {

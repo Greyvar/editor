@@ -5,24 +5,24 @@ import javax.swing.JTextField;
 
 import greyvarEditor.triggers.FragmentArgument;
  
-public class ArgumentMessage extends FragmentArgument {
-	public String message = "hello";
+public class ArgumentString extends FragmentArgument {
+	public String value = "hello";
 	
 	private JTextField txtEditor = new JTextField();
 
 	@Override
 	public void setFromEditor() {
-		message = txtEditor.getText();   
+		value = txtEditor.getText();   
 	}
 	
 	@Override
 	public String toString() {
-		return "{" + message + "}";
+		return "{" + value + "}";
 	} 
 	
 	@Override
 	public JComponent getEditor() {
-		txtEditor.setText(message);
+		txtEditor.setText(value);
 		return txtEditor;
 	}
 } 

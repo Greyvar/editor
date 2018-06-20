@@ -19,6 +19,7 @@ import greyvarEditor.dataModel.World;
 import greyvarEditor.files.WorldFileHandler;
 import greyvarEditor.triggers.Trigger;
 import greyvarEditor.ui.components.ComponentCrudList;
+import greyvarEditor.utils.YamlFile;
 import jwrCommonsJava.ui.JButtonWithAl;
 
 public class WindowTriggerList extends JFrame { 
@@ -57,6 +58,15 @@ public class WindowTriggerList extends JFrame {
 		this.setLocationRelativeTo(null); 
 		this.setVisible(true); 
 	} 
+	
+	@Override
+	public void setVisible(boolean b) {
+		super.setVisible(b);
+		
+		if (!b) { 
+			WorldFileHandler.save(world);
+		}
+	}
 	 
 	private void setupComponents() { 
 		this.setIconImage(WindowMain.getInstance().getIconImage());
