@@ -3,6 +3,7 @@ package greyvarEditor.dataModel;
 import greyvarEditor.GameResources;
 import greyvarEditor.TextureCache;
 import greyvarEditor.ui.windows.editors.grid.panels.Texture;
+import jwrCommonsJava.Logger;
 
 public class EntityInstance {
 	public int id;  
@@ -19,7 +20,12 @@ public class EntityInstance {
 		this.definition = def;
 		
 		this.definitionLink = GameResources.entityDatabase.entdefs.get(this.definition);
-		this.editorTexture = TextureCache.instanceEntities.getTex(this.definitionLink.getFirstState().tex);
+		
+		if (this.definitionLink == null) { 
+			Logger.messageWarning("Could not find entdef: " + this.definition);
+		} else {
+			this.editorTexture = TextureCache.instanceEntities.getTex(this.definitionLink.getEditorInitialState().tex);
+		}
 	}  
  
 	public EntityInstance(String definition, int id) {

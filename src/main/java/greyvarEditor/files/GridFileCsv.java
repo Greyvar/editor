@@ -21,7 +21,7 @@ import java.util.Vector;
 import jwrCommonsJava.Logger;
 
 class GridFileCsv extends CsvFile implements GridFile {
-	private Tile[][] tiles;
+	private Grid<Tile> tiles;
 	
 	private int gridWidth;
 	private int gridHeight;
@@ -42,8 +42,8 @@ class GridFileCsv extends CsvFile implements GridFile {
 		this(new File(GameResources.dirServerData + "/grids/" + text));
 	}
 
-
-	public Tile[][] getTileList() {
+ 
+	public Grid<Tile> getTileList() {
 		return this.tiles;
 	}
 
@@ -51,15 +51,15 @@ class GridFileCsv extends CsvFile implements GridFile {
 		this.gridWidth = 16;
 		this.gridHeight = 16; 
 		
-		this.tiles = new Tile[gridWidth][gridHeight];
-
+		this.tiles.grow(16, 16);
+		
 		for (int x = 0; x < gridWidth; x++) { 
 			for (int y = 0; y < gridHeight; y++) {
-				this.tiles[x][y] = new Tile(TextureCache.instanceTiles.getDefault());
-				Logger.messageDebug("Tile: " + x + ":" + y + "  " + this.tiles[x][y]);
+				this.tiles.set(x, y, new Tile(TextureCache.instanceTiles.getDefault()));
+				Logger.messageDebug("Tile: " + x + ":" + y + "  " + this.tiles.get(x, y)); 
 			}
 		}
-	}
+	} 
 
 	protected void loadLine(String line) {
 		if ((line == null) || line.isEmpty()) {
@@ -97,13 +97,13 @@ class GridFileCsv extends CsvFile implements GridFile {
  
 		Logger.messageDebug(tile.toString());
 
-		this.tiles[x][y] = tile;
+		this.tiles.set(x, y, tile);
 	}
 
 	protected void saveImpl(FileWriter fw) {
 		for (int x = 0; x < gridWidth; x++) { 
 			for (int y = 0; y < gridHeight; y++) {
-				this.saveTile(fw, x, y, this.tiles[x][y]);
+				this.saveTile(fw, x, y, this.tiles.get(x, y));
 			}
 		}
 	}  
@@ -127,8 +127,8 @@ class GridFileCsv extends CsvFile implements GridFile {
 	}
 
 	@Override
-	public EntityInstance[][] getEntityList() {
-		return null;
+	public Grid<EntityInstance> getEntityList() {
+		return null;   
 	}
 
 	@Override

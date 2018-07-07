@@ -24,11 +24,11 @@ import greyvarEditor.dataModel.EntityInstance;
 import jwrCommonsJava.Logger;
 
 public class GridFileYaml implements GridFile {
-	private Tile[][] tiles;
-	private EntityInstance[][] entities; 
-	private int gridWidth;
-	private int gridHeight;
-	private int lastEntityId;  
+	private Grid<Tile> tiles = new Grid<>();
+	private Grid<EntityInstance> entities = new Grid<>(); 
+	private int gridWidth;  
+	private int gridHeight; 
+	private int lastEntityId = 0;  
 	
 	private transient File f;
 	
@@ -41,30 +41,13 @@ public class GridFileYaml implements GridFile {
 
 	public GridFileYaml(File f) {
 		this.f = f; 
-		
-		this.initMap(); 
+		 
 		this.load();
 	}
 	
-	private void initMap() {
-		this.gridWidth = 16;
-		this.gridHeight = 16; 
-		this.lastEntityId = 0; 
-		
-		this.tiles = new Tile[gridWidth][gridHeight];
-		this.entities = new EntityInstance[gridWidth][gridHeight]; 
-
-		for (int x = 0; x < gridWidth; x++) { 
-			for (int y = 0; y < gridHeight; y++) { 
-				this.tiles[x][y] = new Tile(TextureCache.instanceTiles.getDefault());  
-				this.entities[x][y] = null;  
-			}
-		}
-	}
-  
 	@Override
-	public Tile[][] getTileList() {
-		return tiles; 
+	public Grid<Tile> getTileList() {
+		return tiles;  
 	} 
 
 	@Override 
@@ -74,6 +57,9 @@ public class GridFileYaml implements GridFile {
 
 	@Override
 	public void load() {
+		this.gridWidth = 0;
+		this.gridHeight = 0; 
+		
 		try {
 			YAMLFactory f = new YAMLFactory();
 			FileReader fr = new FileReader(this.f); 
@@ -98,11 +84,11 @@ public class GridFileYaml implements GridFile {
 							loadEntityList(p);
 							break;
 						case "width":
-							this.gridWidth = p.nextIntValue(16);
-							break;
+							this.grow(p.nextIntValue(16), 0); // growing from 0, 0 initial size
+							break;  
 						case "height":
-							this.gridHeight = p.nextIntValue(16);
-							break;
+							this.grow(0, p.nextIntValue(16)); // growing from 0, 0 initial size
+							break; 
 						case "lastEntityId":
 							this.lastEntityId = p.nextIntValue(0);
 							break;  
@@ -165,7 +151,7 @@ public class GridFileYaml implements GridFile {
 					
 					EntityInstance e = new EntityInstance(definition, id);    
 					
-					this.entities[x][y] = e;
+					this.entities.set(x, y, e);
 					break;
 				case FIELD_NAME:
 					switch(p.currentName()) {
@@ -225,7 +211,7 @@ public class GridFileYaml implements GridFile {
 					Tile tile = new Tile(TextureCache.instanceTiles.getTex(texture, rot, flipV, flipH));
 					tile.traversable = traversable;
 					
-					this.tiles[x][y] = tile;
+					this.tiles.set(x, y, tile);
 					break;
 				case FIELD_NAME:
 					switch (p.currentName()) {
@@ -294,7 +280,7 @@ public class GridFileYaml implements GridFile {
 			gen.writeStartArray();
 			for (int x = 0; x < gridWidth; x++) {
 				for (int y = 0; y < gridHeight; y++) {
-					Tile t = this.tiles[x][y]; 
+					Tile t = this.tiles.get(x, y);  
 					
 					gen.writeStartObject();					
 					gen.writeStringField("texture", t.getTextureFilenameOnly());
@@ -321,7 +307,7 @@ public class GridFileYaml implements GridFile {
 			gen.writeStartArray();
 			for (int x = 0; x < gridWidth; x++) {
 				for (int y = 0; y < gridHeight; y++) {
-					EntityInstance e = this.entities[x][y];
+					EntityInstance e = this.entities.get(x, y);
  
 					if (e == null || e.editorTexture == null) {
 						continue;
@@ -331,7 +317,7 @@ public class GridFileYaml implements GridFile {
 					gen.writeNumberField("x", x);
 					gen.writeNumberField("y", y);   
 					gen.writeNumberField("id", e.id);  
-					gen.writeStringField("definition", this.entities[x][y].definition);
+					gen.writeStringField("definition", this.entities.get(x, y).definition);
 					
 					gen.writeEndObject();
 				}
@@ -344,12 +330,12 @@ public class GridFileYaml implements GridFile {
 		} 
 	}
 
-	public void setTileList(Tile[][] tileList) {
+	public void setTileList(Grid<Tile> tileList) {
 		this.tiles = tileList;		
 	}
 
 	@Override 
-	public EntityInstance[][] getEntityList() {
+	public Grid<EntityInstance> getEntityList() {
 		return this.entities; 
 	}
 
@@ -357,11 +343,17 @@ public class GridFileYaml implements GridFile {
 	public int nextEntityId() {
 		this.lastEntityId++;
 		
-		return this.lastEntityId;
-	}
+		return this.lastEntityId; 
+	} 
 
 	@Override
 	public void grow(int w, int h) {
+		for (Grid.Pos p : this.tiles.grow(w, h)) {
+			this.tiles.set(p, new Tile(TextureCache.instanceTiles.getDefault()));		
+		}
+			
+		this.entities.grow(w, h);
+
 		this.gridWidth += w;
 		this.gridHeight += h;
 	}

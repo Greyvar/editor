@@ -6,7 +6,7 @@ import greyvarEditor.Tile;
 import greyvarEditor.dataModel.EntityInstance;
 
 public interface GridFile { 
-	public Tile[][] getTileList();
+	public Grid<Tile> getTileList();
 
 	public String getFilename(); 
 	
@@ -19,8 +19,8 @@ public interface GridFile {
 	public void save();
 
 	public File getFile(); 
-
-	public EntityInstance[][] getEntityList();   
+ 
+	public Grid<EntityInstance> getEntityList();   
 	
 	public int nextEntityId();
 

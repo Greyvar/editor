@@ -13,8 +13,8 @@ public class GridResizer {
 		this.windowEditorGrid = windowEditorGrid;
 	}
 	
-	public void resize() { 
-		windowEditorGrid.getGridFile().grow(2, 2); 
+	public void resize(int x, int y) {  
+		windowEditorGrid.getGridFile().grow(x, y); 
 	}
 }
  

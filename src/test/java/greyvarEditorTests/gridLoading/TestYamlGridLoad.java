@@ -4,6 +4,7 @@ import java.io.File;
 
 import greyvarEditor.Tile;
 import greyvarEditor.dataModel.EntityInstance;
+import greyvarEditor.files.Grid;
 import greyvarEditor.files.GridFileYaml;
 import junit.framework.TestCase;
 import jwrCommonsJava.Configuration;
@@ -20,13 +21,15 @@ public class TestYamlGridLoad extends TestCase {
 		assertEquals(16, gridFile.getGridWidth());
 		assertEquals(16, gridFile.getGridHeight()); 
 		
-		Tile[][] tileList = gridFile.getTileList();
+		Grid<Tile> tileList = gridFile.getTileList();
 		
-		assertNotNull(tileList);  
+		assertNotNull(tileList);    
 		
-		EntityInstance[][] entityList = gridFile.getEntityList();
-		  
-		assertEquals("hill.png", tileList[0][0].getTextureFilenameOnly());
-		assertEquals("chest", entityList[13][4].definition);   
+		Grid<EntityInstance> entityList = gridFile.getEntityList();
+		
+		System.out.println(entityList); 
+		   
+		assertEquals("hill.png", tileList.get(0, 0).getTextureFilenameOnly());
+		assertEquals("chest", entityList.get(13, 4).definition);   
 	}
 } 

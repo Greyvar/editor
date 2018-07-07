@@ -39,8 +39,8 @@ public class EntityDatabase {
 			EntityDefinition entdef = om.readValue(f, EntityDefinition.class);
 			 
 			this.entdefs.put(entdef.title, entdef);
-			 
-			Logger.messageNormal("Loaded entdef: " + entdef.title);
+			  
+			Logger.messageNormal("Loaded entdef: " + entdef.title + ", initial state = " + entdef.initialState);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,7 +52,7 @@ public class EntityDatabase {
 		if (entdef == null) {
 			return TextureCache.instanceEntities.getDefault();	
 		} else {
-			return TextureCache.instanceEntities.getTex(entdef.getFirstState().tex); 
+			return TextureCache.instanceEntities.getTex(entdef.getEditorInitialState().tex); 
 		} 
 	}
 

@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -28,9 +29,6 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 	private int currx;
 	private int curry;
-
-	private Tile[][] tileList;
-	private EntityInstance[][] entityList;  
 
 	private GridFile gf;
 	private Tile lastHoveredTile;
@@ -66,8 +64,8 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 	public void blanketTextureEverything(Texture t) {
 		for (int i = 0; i < this.gf.getGridWidth(); i++) {
 			for (int j = 0; j < this.gf.getGridHeight(); j++) {
-				this.tileList[i][j].tex = t;
-			}
+				this.gf.getTileList().get(i, j).tex = t;
+			} 
 		}
  
 		this.repaint();
@@ -87,8 +85,8 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		return this.scaleImage(bi, 64, 64, Color.WHITE);
 	}
 
-	public Tile getTileAt(int x, int y) {
-		return this.tileList[x][y];
+	public Tile getTileAt(int x, int y) { 
+		return this.gf.getTileList().get(x, y);
 	}
 
 	public Point getCellAt(Point p) {
@@ -100,17 +98,9 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 		return new Point(x, y);
 	}
-
-	public Vector<Tile> getTiles() {
-		Vector<Tile> tiles = new Vector<Tile>();
-
-		for (int x = 0; x < gf.getGridWidth(); x++) {
-			for (int y = 0; y < gf.getGridHeight(); y++) { 
-				tiles.add(this.tileList[x][y]);
-			}
-		}
-
-		return tiles;
+ 
+	public Iterable<Tile> getTiles() {
+		return gf.getTileList().getIterator();
 	}
 
 	@Override
@@ -137,7 +127,7 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		Point p = this.getCellAt(e.getPoint());
 
 		if ((p.x < gf.getGridWidth()) && (p.y < gf.getGridHeight())) {
-			Tile t = this.tileList[p.x][p.y];
+			Tile t = this.gf.getTileList().get(p.x, p.y); 
 
 			if (this.lastHoveredTile != null) {
 				this.lastHoveredTile.hover = false;
@@ -160,9 +150,9 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (e.getClickCount() > 1) { 
-				this.windowEditorGrid.onCellSelected(this.currx, this.curry, this.tileList[p.x][p.y], this.entityList[p.x][p.y]);
+				this.windowEditorGrid.onCellSelected(this.currx, this.curry, this.gf.getTileList().get(p.x, p.y), this.gf.getEntityList().get(p.x, p.y));
 			} else {
-				this.windowEditorGrid.onCellFocus(this.currx, this.curry, this.tileList[p.x][p.y], this.entityList[p.x][p.y]);
+				this.windowEditorGrid.onCellFocus(this.currx, this.curry, this.gf.getTileList().get(p.x, p.y), this.gf.getEntityList().get(p.x, p.y));
 			}
 		} else if (e.getButton() == MouseEvent.BUTTON3) { 
 			this.onCellApplyPaint(this.currx, this.curry);
@@ -176,10 +166,10 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		case ENTITIES:  
 			EntityInstance enti = windowEditorGrid.panEntity.getNewSelected(this.getGridFile().nextEntityId());
 			 
-			this.entityList[x][y] = enti;
+			this.gf.getEntityList().set(x, y, enti);
 			break;
 		case TILES: 
-			this.tileList[x][y].tex = windowEditorGrid.panAppearance.getCurrentTexture();
+			this.gf.getTileList().get(x, y).tex = windowEditorGrid.panAppearance.getCurrentTexture();
 		} 
 	}
 
@@ -194,7 +184,7 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 		for (int x = 0; x < gf.getGridWidth(); x++) {
 			for (int y = 0; y < gf.getGridHeight(); y++) {
-				this.paintTile(g, x, y, this.tileList[x][y], w, h);
+				this.paintTile(g, x, y, this.gf.getTileList().get(x, y), w, h);
 			}
 		} 
 		
@@ -204,11 +194,11 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 		}  
 		
 		for (int x = 0; x < gf.getGridWidth(); x++) {
-			for (int y = 0; y < gf.getGridWidth(); y++) {
-				this.paintEntity(g, x, y, this.entityList[x][y], w, h);
+			for (int y = 0; y < gf.getGridHeight(); y++) { 
+				this.paintEntity(g, x, y, this.gf.getEntityList().get(x, y), w, h);
 			}
-		} 
-	}
+		}  
+	} 
 	
 	public void paintEntity(Graphics g, int x, int y, EntityInstance e, int w, int h) {
 		if (e == null || e.editorTexture == null) {
@@ -275,8 +265,6 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 
 	public void setGridFile(GridFile gf) {
 		this.gf = gf;
-		this.tileList = gf.getTileList(); 
-		this.entityList = gf.getEntityList(); 
 		this.repaint(); 
 	}
 
@@ -285,8 +273,8 @@ public class ComponentGridEditor extends JComponent implements MouseListener, Mo
 	}
 
 	public void setTileAt(int x, int y, Tile tile) {
-		this.tileList[x][y] = tile;
-	}
+		this.gf.getTileList().set(x, y, tile);
+	} 
 
 	public void setEditMode(EditLayerMode mode) {
 		this.currentEditMode = mode;
