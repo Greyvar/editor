@@ -7,18 +7,17 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import jwrCommonsJava.Logger;
 
 public class Texture {
 	public Image image;
-	private final File filename;
+	private final String filename;
 	public int rot = 0; 
 	public boolean flipV = false;
 	public boolean flipH = false;
 
-	public Texture(Image tex, File filename) {
+	public Texture(Image tex, String filename) {
 		this.image = tex;
 		this.filename = filename;
 	}
@@ -71,11 +70,11 @@ public class Texture {
 	}
 
 	public String getFilename() { 
-		return this.filename.getName();
+		return this.filename;
 	}
 
 	public String getId() {
-		return this.filename.getName() + ":" + this.rot + ":" + ((this.flipV) ? 'V' : 'v') + ":" + ((this.flipH) ? 'H' : 'h');
+		return this.filename + ":" + this.rot + ":" + ((this.flipV) ? 'V' : 'v') + ":" + ((this.flipH) ? 'H' : 'h');
 	}
 
 	public void rotate(int rot) {

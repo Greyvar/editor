@@ -1,6 +1,9 @@
 package greyvarEditor;
 
+import java.awt.Color;
 import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
 
@@ -61,11 +64,12 @@ public class TextureCache {
 	private Texture defaultTexture;
 	File baseDir;
 
-	private TextureCache(String subdir) {
-		Logger.messageDebug("texture cache constructing from subdir: " + subdir);
-		
+	private TextureCache(String subdir) {	
 		this.baseDir = new File(GameResources.dirTextures, subdir); 
-		this.defaultTexture = this.loadTex(new File(baseDir, "construct.png")); 
+
+		Logger.messageDebug("texture cache for " + subdir + " will use base dir of; " + this.baseDir.getAbsolutePath());
+
+		this.defaultTexture = this.loadTexConstruct();
 	}
 
 	public HashMap<String, Texture> getAll() {
@@ -131,7 +135,7 @@ public class TextureCache {
 		try {
 			File f = new File(baseDir + "/" + texName);
 			Image i = ImageIO.read(f);
-			Texture tex = new Texture(i, f);
+			Texture tex = new Texture(i, f.getName());
    
 			Logger.messageDebug("Loaded tex (" + this.baseDir.getName() + " cache): " + texName);
 			this.textureCacheOriginals.put(texName, tex);
@@ -143,6 +147,21 @@ public class TextureCache {
 		}
 		
 		return this.defaultTexture; 
+	}
+
+	public Texture loadTexConstruct() {
+		final int w = 32;
+		final int h = 32;
+
+		BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = bi.createGraphics();
+		g2d.setColor(Color.orange);
+		g2d.fillRect(0, 0, w, h);
+		g2d.dispose();
+
+		Texture tex = new Texture(bi, "<construct>");
+
+		return tex;
 	}
   
 	public void loadTextures() {
