@@ -138,7 +138,7 @@ public class TextureCache {
 
 			return tex;
 		} catch (Exception e) {
-			Logger.messageWarning("Failed to load: " + texName + " because: " + e.getMessage());
+			Logger.messageWarning("Failed to load: " + texName + " from " + this.baseDir + " because: " + e.getMessage());
 			this.textureCacheOriginals.put(texName, this.defaultTexture);
 		}
 		
