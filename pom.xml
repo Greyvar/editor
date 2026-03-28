@@ -3,11 +3,14 @@
   <groupId>Greyvar-editor</groupId>
   <artifactId>Greyvar-editor</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <properties>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <dependencies>
   	<dependency>
   		<groupId>jwrCommonsJava</groupId>
   		<artifactId>jwrCommonsJava</artifactId>
-  		<version>0.0.15</version>
+  		<version>1.0.1</version>
   	</dependency>
   	<dependency>
   		<groupId>com.fasterxml.jackson.dataformat</groupId>
