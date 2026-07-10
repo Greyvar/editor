@@ -9,6 +9,7 @@ public class EntityDefinition {
 	public String title; 
 	public HashMap<String, EntityState> states = new HashMap<>();
 	public String initialState; 
+	public String texture;
 	
 	@Transient  
 	public EntityState getEditorInitialState() {

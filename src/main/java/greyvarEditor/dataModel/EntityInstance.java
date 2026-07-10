@@ -8,7 +8,7 @@ import jwrCommonsJava.Logger;
 public class EntityInstance {
 	public int id;  
 	public String definition;
-	
+
 	public transient EntityDefinition definitionLink;
 	public transient Texture editorTexture;
 	

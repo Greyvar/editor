@@ -59,7 +59,7 @@ public class GridFileYaml implements GridFile {
 	public void load() {
 		this.gridWidth = 0;
 		this.gridHeight = 0; 
-		
+	
 		try {
 			YAMLFactory f = new YAMLFactory();
 			FileReader fr = new FileReader(this.f); 
@@ -83,10 +83,10 @@ public class GridFileYaml implements GridFile {
 						case "entities":
 							loadEntityList(p);
 							break;
-						case "width":
+						case "colcount":
 							this.grow(p.nextIntValue(16), 0); // growing from 0, 0 initial size
 							break;  
-						case "height":
+						case "rowcount":
 							this.grow(0, p.nextIntValue(16)); // growing from 0, 0 initial size
 							break; 
 						case "lastEntityId":
@@ -108,6 +108,10 @@ public class GridFileYaml implements GridFile {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		if (this.gridWidth == 0) {
+			this.grow(4, 4);
+		}
 	}
 
 	private void logUnhandledToken(JsonToken t, YAMLParser p) {
@@ -119,8 +123,8 @@ public class GridFileYaml implements GridFile {
 	private void loadEntityList(YAMLParser p)  {
 		boolean endOfList = false;
 		
-		int x = -1;
-		int y = -1;
+		int row = -1;
+		int col = -1;
 		int id = -1; 
 		String definition = "";
 		
@@ -136,8 +140,8 @@ public class GridFileYaml implements GridFile {
 				case START_ARRAY:
 					break;
 				case START_OBJECT:
-					x = -1;
-					y = -1;
+					row = -1;
+					col = -1;
 					id = -1;
 					definition = "";
 					
@@ -145,21 +149,21 @@ public class GridFileYaml implements GridFile {
 				case END_ARRAY: 
 					endOfList = true;
 				case END_OBJECT:   
-					if (x == -1 || y == -1) {
+					if (row == -1 || col == -1) {
 						continue;
 					} 
 					
 					EntityInstance e = new EntityInstance(definition, id);    
 					
-					this.entities.set(x, y, e);
+					this.entities.set(row, col, e);
 					break;
 				case FIELD_NAME:
 					switch(p.currentName()) {
-					case "x": 
-						x = p.nextIntValue(-1);
+					case "row": 
+						row = p.nextIntValue(-1);
 						break;
-					case "y": 
-						y = p.nextIntValue(-1);
+					case "col": 
+						col = p.nextIntValue(-1);
 						break;
 					case "id": 
 						id = p.nextIntValue(-1);
